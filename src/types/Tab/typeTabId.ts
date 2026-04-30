@@ -1,1 +1,1 @@
-export type TabIds = 'ranking' | 'news' | 'events' | 'registrations' | 'profile' ;
+export type TabIds = 'ranking' | 'news' | 'events' | 'registrations' | 'profile' | 'admin' | 'checkin';

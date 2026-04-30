@@ -1,6 +1,13 @@
 import { Trophy, Award, User } from 'lucide-react';
 import { getRankingMembers } from '../api/RakingMembers/getRankingMembers';
 
+// TODO: Replace getRankingMembers() with fetchRanking() from rankingService.ts
+// TODO: Use useState + useEffect to load data asynchronously:
+//   const [members, setMembers] = useState([]);
+//   useEffect(() => { fetchRanking().then(setMembers); }, []);
+// TODO: Add a loading skeleton while data is being fetched
+// TODO: Add error state if the request fails
+
 export function Ranking() {
 
   const members = getRankingMembers()

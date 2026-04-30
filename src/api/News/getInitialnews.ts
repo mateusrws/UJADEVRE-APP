@@ -1,5 +1,5 @@
 import { Award, BookOpen, Megaphone, Star } from "lucide-react";
-import type { News } from "../types/News/NewsType";
+import type { News } from "../../types/News/NewsType";
 
 export function getInitialNews(){
     const initialNews: News[] = [

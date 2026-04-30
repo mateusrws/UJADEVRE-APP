@@ -1,8 +1,12 @@
+// TODO: When backend is ready, change id type from number to string (UUID)
+// TODO: Remove the icon field — the backend will return an iconName string instead
+//       Map iconName to a lucide component in the frontend using a lookup table
 export type News = {
-    id: number,
-    title: string,
-    summary: string,
-    date: Date,
-    icon: any
+    id: number;
+    title: string;
+    summary: string;
+    // TODO: Backend will return date as ISO string — parse to Date on the frontend
+    date: Date;
+    // TODO: Replace with iconName: string when backend is ready
+    icon: any;
 }
-// ! Depois de criar o BackEnd devo trocar o tipo do ID para string

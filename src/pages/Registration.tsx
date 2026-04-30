@@ -6,6 +6,13 @@ import { processPayment } from '../api/payment/processPayment';
 import { PaymentModal } from '../components/RegistrationComponent/PaymentModal';
 import { TicketModal } from '../components/RegistrationComponent/TicketModal';
 
+// TODO: Replace getMyRegistrations() with fetchMyRegistrations() from registrationService.ts
+// TODO: Use useState + useEffect to load data asynchronously:
+//   useEffect(() => { fetchMyRegistrations().then(setRegistrations); }, []);
+// TODO: Replace handlePayment (processPayment) with submitPayment() from registrationService.ts
+//   Call the service, then update the specific registration in local state with the returned data
+// TODO: Add loading and error states
+
 
 export function Registration(){
     const [registrations, setRegistrations] = useState<InterfaceRegistration[]>(getMyRegistrations());

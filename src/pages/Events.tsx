@@ -1,11 +1,30 @@
-import { Calendar, Camera, Clock, Gamepad2, MapPin, PartyPopper, Plus, Star, TreePine, Users, X } from "lucide-react";
+import { Calendar, Camera, Clock, Coffee, Dumbbell, Gamepad2, MapPin, Music, PartyPopper, Plus, Star, Trash2, TreePine, Users, X } from "lucide-react";
 import { getInitialEvents } from "../types/Event/getInitialevents";
 import type { InterfaceEvent } from "../types/Event/EventInterface";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
+// TODO: Replace getInitialEvents() with fetchEvents() from eventService.ts
+// TODO: Use useState + useEffect to load data asynchronously:
+//   useEffect(() => { fetchEvents().then(setEvents); }, []);
+// TODO: Replace handleCreateEvent local state update with createEvent() from eventService.ts
+// TODO: Replace handleDeleteEvent local state update with deleteEvent() from eventService.ts
+// TODO: Replace handleRegister local state update with registerForEvent() / cancelEventRegistration() from eventService.ts
+// TODO: Add loading and error states
 
-export function Events(){
+const eventIconOptions = [
+    { value: 'PartyPopper', icon: PartyPopper, label: 'Festa' },
+    { value: 'Camera', icon: Camera, label: 'Câmera' },
+    { value: 'TreePine', icon: TreePine, label: 'Natureza' },
+    { value: 'Gamepad2', icon: Gamepad2, label: 'Jogos' },
+    { value: 'Music', icon: Music, label: 'Música' },
+    { value: 'Coffee', icon: Coffee, label: 'Café' },
+    { value: 'Dumbbell', icon: Dumbbell, label: 'Esporte' },
+    { value: 'Calendar', icon: Calendar, label: 'Evento' },
+];
 
+export function Events() {
+    const { isAdmin } = useAuth();
     const [events, setEvents] = useState<InterfaceEvent[]>(getInitialEvents());
     const [registeredEvents, setRegisteredEvents] = useState<number[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,14 +35,6 @@ export function Events(){
     const [newEventMaxParticipants, setNewEventMaxParticipants] = useState('');
     const [newEventPoints, setNewEventPoints] = useState('');
     const [selectedEventIconIndex, setSelectedEventIconIndex] = useState(0);
-
-    const eventIconOptions = [
-        { value: 'PartyPopper', icon: PartyPopper, label: 'Festa' },
-        { value: 'Camera', icon: Camera, label: 'Câmera' },
-        { value: 'TreePine', icon: TreePine, label: 'Natureza' },
-        { value: 'Gamepad2', icon: Gamepad2, label: 'Jogos' },
-        { value: 'Star', icon: Star, label: 'Estrela' },
-    ];
 
     const handleRegister = (eventId: number) => {
         if (registeredEvents.includes(eventId)) {
@@ -73,7 +84,13 @@ export function Events(){
         setSelectedEventIconIndex(0);
     };
 
-    return(
+    const handleDeleteEvent = (eventId: number) => {
+        if (window.confirm('Tem certeza que deseja excluir este evento?')) {
+            setEvents(events.filter(e => e.id !== eventId));
+        }
+    };
+
+    return (
         <div className="flex flex-col gap-6 p-6 bg-gray-50 min-h-full">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -82,12 +99,14 @@ export function Events(){
                     </div>
                     <h1 className="text-2xl font-semibold">Eventos</h1>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-black text-white p-3 rounded-xl hover:bg-gray-800 transition-all shadow-sm"
-                >
-                    <Plus size={20} />
-                </button>
+                {isAdmin() && (
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-black text-white p-3 rounded-xl hover:bg-gray-800 transition-all shadow-sm"
+                    >
+                        <Plus size={20} />
+                    </button>
+                )}
             </div>
 
             <div className="flex flex-col gap-4">
@@ -97,20 +116,27 @@ export function Events(){
                     const progress = (event.participants / event.maxParticipants) * 100;
 
                     return (
-                        <div
-                            key={event.id}
-                            className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all"
-                        >
+                        <div key={event.id} className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
                             <div className="flex gap-4 mb-4">
                                 <div className="bg-gray-100 p-3 rounded-xl shrink-0">
                                     <Icon size={28} className="text-black" />
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-start justify-between mb-3">
-                                        <h3 className="font-semibold text-black text-lg">{event.name}</h3>
-                                        <div className="bg-black text-white px-3 py-1 rounded-full flex items-center gap-1 shrink-0 ml-2">
-                                            <Star size={14} fill="white" />
-                                            <span className="text-sm font-semibold">{event.points}</span>
+                                        <h3 className="font-semibold text-black text-lg flex-1">{event.name}</h3>
+                                        <div className="flex items-center gap-2">
+                                            <div className="bg-black text-white px-3 py-1 rounded-full flex items-center gap-1 shrink-0">
+                                                <Star size={14} fill="white" />
+                                                <span className="text-sm font-semibold">{event.points}</span>
+                                            </div>
+                                            {isAdmin() && (
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleDeleteEvent(event.id); }}
+                                                    className="p-2 hover:bg-red-50 rounded-xl transition-all text-red-600"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
 
@@ -140,10 +166,7 @@ export function Events(){
                                     <span>{Math.round(progress)}%</span>
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-2">
-                                    <div
-                                        className="bg-black h-2 rounded-full transition-all"
-                                        style={{ width: `${progress}%` }}
-                                    />
+                                    <div className="bg-black h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
                                 </div>
                             </div>
 
@@ -163,8 +186,8 @@ export function Events(){
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
+                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl my-8">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="bg-black p-2 rounded-xl">
@@ -172,28 +195,25 @@ export function Events(){
                                 </div>
                                 <h2 className="text-xl font-semibold">Novo Evento</h2>
                             </div>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="p-2 hover:bg-gray-100 rounded-xl transition-all"
-                            >
+                            <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-all">
                                 <X size={24} />
                             </button>
                         </div>
 
                         <div className="flex flex-col gap-4 mb-6">
                             <div>
-                                <label className="text-sm text-gray-600 mb-2 block">Título</label>
+                                <label className="text-sm text-gray-600 mb-2 block">Título do Evento</label>
                                 <input
                                     type="text"
                                     value={newEventTitle}
                                     onChange={(e) => setNewEventTitle(e.target.value)}
-                                    placeholder="Nome do evento"
+                                    placeholder="Ex: Workshop de Fotografia"
                                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
                                 />
                             </div>
 
-                            <div className="flex gap-3">
-                                <div className="flex-1">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
                                     <label className="text-sm text-gray-600 mb-2 block">Data</label>
                                     <input
                                         type="date"
@@ -202,8 +222,8 @@ export function Events(){
                                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
-                                <div className="flex-1">
-                                    <label className="text-sm text-gray-600 mb-2 block">Hora</label>
+                                <div>
+                                    <label className="text-sm text-gray-600 mb-2 block">Horário</label>
                                     <input
                                         type="time"
                                         value={newEventTime}
@@ -219,24 +239,24 @@ export function Events(){
                                     type="text"
                                     value={newEventLocation}
                                     onChange={(e) => setNewEventLocation(e.target.value)}
-                                    placeholder="Local do evento"
+                                    placeholder="Ex: Clube Central"
                                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
                                 />
                             </div>
 
-                            <div className="flex gap-3">
-                                <div className="flex-1">
-                                    <label className="text-sm text-gray-600 mb-2 block">Máx. participantes</label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-sm text-gray-600 mb-2 block">Máx. Participantes</label>
                                     <input
                                         type="number"
                                         value={newEventMaxParticipants}
                                         onChange={(e) => setNewEventMaxParticipants(e.target.value)}
-                                        placeholder="Ex: 50"
+                                        placeholder="Ex: 30"
                                         min="1"
                                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
                                     />
                                 </div>
-                                <div className="flex-1">
+                                <div>
                                     <label className="text-sm text-gray-600 mb-2 block">Pontos</label>
                                     <input
                                         type="number"
@@ -251,7 +271,7 @@ export function Events(){
 
                             <div>
                                 <label className="text-sm text-gray-600 mb-2 block">Ícone</label>
-                                <div className="grid grid-cols-5 gap-2">
+                                <div className="grid grid-cols-4 gap-2">
                                     {eventIconOptions.map((option, index) => {
                                         const IconComponent = option.icon;
                                         return (
@@ -290,5 +310,5 @@ export function Events(){
                 </div>
             )}
         </div>
-    )
+    );
 }
