@@ -47,7 +47,7 @@ model User{
   user_data_nasc DateTime 
   user_bio       String
   end_id         String
-  user_cpg       String           @unique
+  user_cpf       String           @unique
   user_foto_url  String?
   user_email     String           @unique
   user_tel       String           @unique
