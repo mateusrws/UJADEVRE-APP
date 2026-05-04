@@ -1,4 +1,4 @@
-import { compare, compareSync } from "bcrypt";
+import { compareSync } from "bcrypt";
 import { mockUserRepository as MockUserRepository } from "../repositories/mockUserRepository";
 import { createUserUseCase as CreateUserUseCase } from "./createUserUseCase";
 import { TypeUser } from "types/enums/userTypeEnum";
