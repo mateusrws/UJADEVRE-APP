@@ -49,7 +49,7 @@ export class User{
     constructor(props: Replace<UserSchema, { user_createdAt?: Date, user_point?: number }>,_user_id?: string){
         this.props = {
             ...props,
-            user_senha:  hashSync(this.user_senha, 10),
+            user_senha:  hashSync(props.user_senha, 10),
             user_point: props.user_point || 0,
             user_createdAt: props.user_createdAt || new Date(),
         }
@@ -86,7 +86,7 @@ export class User{
     get user_tipo(): string{
         return this.props.user_tipo;
     }
-    set user_tipo(user_tipo: UserType){
+    set user_tipo(user_tipo: TypeUser){
         this.props.user_tipo = user_tipo;
     }
     get user_data_nasc(): Date{

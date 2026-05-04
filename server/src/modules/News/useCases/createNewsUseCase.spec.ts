@@ -11,7 +11,7 @@ describe('', ()=>{
         createNewsUseCase = new CreateNewsUseCase(mockNewsRepository)
     })
 
-    it("Should be able to create address", async () => {
+    it("Should be able to create news", async () => {
         expect(mockNewsRepository.news).toEqual([])
 
         const news = await createNewsUseCase.execute({

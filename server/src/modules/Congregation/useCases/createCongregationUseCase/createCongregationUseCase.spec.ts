@@ -11,7 +11,7 @@ describe('', ()=>{
         createCongregationUseCase = new CreateCongregationbUseCase(mockCongregationRepository)
     })
 
-    it("Should be able to create address", async () => {
+    it("Should be able to create congregation", async () => {
         expect(mockCongregationRepository.congregation).toEqual([])
 
         const congregation = createCongregationUseCase.execute({
