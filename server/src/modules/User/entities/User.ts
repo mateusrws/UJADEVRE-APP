@@ -17,6 +17,8 @@
 
 import { randomUUID } from "crypto";
 import { Replace } from "src/utils/replace";
+import { hashSync } from "bcrypt"
+import { TypeUser } from "types/enums/userTypeEnum";
 
 //   registrations  Registration[]
 //   end            Address          @relation(fields: [end_id],references: [add_id])
@@ -28,7 +30,7 @@ interface UserSchema {
   user_email: string;
   user_tel: string;
   user_senha: string;
-  user_tipo: UserType;
+  user_tipo: TypeUser;
   user_data_nasc: Date;
   user_bio: string;
   user_cpf: string;
@@ -39,10 +41,6 @@ interface UserSchema {
   user_createdAt: Date;
 }
 
-enum UserType {
-    Adolescente = 'Adolescente',
-    Administrador = 'Administrador'
-}
 
 export class User{
     props: UserSchema;
@@ -51,7 +49,7 @@ export class User{
     constructor(props: Replace<UserSchema, { user_createdAt?: Date, user_point?: number }>,_user_id?: string){
         this.props = {
             ...props,
-            
+            user_senha:  hashSync(this.user_senha, 10),
             user_point: props.user_point || 0,
             user_createdAt: props.user_createdAt || new Date(),
         }
@@ -83,12 +81,12 @@ export class User{
         return this.props.user_senha;
     }
     set user_senha(user_senha: string){
-        this.props.user_senha = user_senha;
+        this.props.user_senha = hashSync(user_senha, 10);
     }   
     get user_tipo(): string{
         return this.props.user_tipo;
     }
-    set user_tipo(user_tipo: string){
+    set user_tipo(user_tipo: UserType){
         this.props.user_tipo = user_tipo;
     }
     get user_data_nasc(): Date{
