@@ -1,12 +1,13 @@
 -- CreateTable
 CREATE TABLE "Address" (
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "add_createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "add_updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "add_id" TEXT NOT NULL,
     "add_bairro" TEXT NOT NULL,
     "add_cidade" TEXT NOT NULL,
     "add_uf" TEXT NOT NULL,
     "add_cep" TEXT NOT NULL,
+    "add_number" TEXT NOT NULL,
     "add_rua" TEXT NOT NULL,
     "add_comp" TEXT,
 
@@ -33,7 +34,7 @@ CREATE TABLE "User" (
     "user_data_nasc" TIMESTAMP(3) NOT NULL,
     "user_bio" TEXT NOT NULL,
     "end_id" TEXT NOT NULL,
-    "user_cpg" TEXT NOT NULL,
+    "user_cpf" TEXT NOT NULL,
     "user_foto_url" TEXT,
     "user_email" TEXT NOT NULL,
     "user_tel" TEXT NOT NULL,
@@ -85,7 +86,7 @@ CREATE TABLE "Registration" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_user_cpg_key" ON "User"("user_cpg");
+CREATE UNIQUE INDEX "User_user_cpf_key" ON "User"("user_cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_user_email_key" ON "User"("user_email");

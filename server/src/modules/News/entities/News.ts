@@ -19,8 +19,8 @@ interface NewsSchemas{
 }
 
 export class News{
-    props: NewsSchemas;
-    _new_id: string;
+    private props: NewsSchemas;
+    private _new_id: string;
 
     constructor(props: Replace<NewsSchemas, { new_createdAt?: Date }>,_new_id?: string){
         this.props = {

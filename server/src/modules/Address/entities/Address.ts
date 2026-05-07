@@ -22,14 +22,15 @@ interface AddressSchema{
     add_cidade: string
     add_uf: string
     add_cep: string
+    add_number
     add_rua: string
     add_createdAt: Date
     add_comp: string
 }
 
 export class Address{
-    props: AddressSchema;
-    _add_id: string;
+    private props: AddressSchema;
+    private _add_id: string;
 
     constructor(props: Replace<AddressSchema, { add_createdAt?: Date, add_comp?: string }>,add_id?: string){
         this.props = {
@@ -40,47 +41,57 @@ export class Address{
         this._add_id = add_id || randomUUID();
     }
 
-    get add_id(): string{
+    get get_add_id(): string{
         return this._add_id
     }
-    get add_bairro(): string{
+    get get_add_bairro(): string{
         return this.props.add_bairro
     }   
-    get add_cidade(): string{
+    get get_add_cidade(): string{
         return this.props.add_cidade
     }
-    get add_uf(): string{
+    get get_add_uf(): string{
         return this.props.add_uf
     }
-    get add_cep(): string{
+    get get_add_cep(): string{
         return this.props.add_cep
     }
-    get add_rua(): string{
+    get get_add_rua(): string{
         return this.props.add_rua
     }
-    get add_comp(): string{
+    get get_add_comp(): string{
         return this.props.add_comp
     }
-    get add_createdAt(): Date{
+    get get_add_createdAt(): Date{
         return this.props.add_createdAt
     }
 
-    set add_bairro(add_bairro:string){
+    get get_add_number(): string{
+        return this.props.add_number
+    }
+
+    set set_add_number(add_number: string){
+        
+        this.props.add_number = add_number;
+
+    }
+
+    set set_add_bairro(add_bairro:string){
         this.props.add_bairro = add_bairro;
     }   
-    set add_cidade(add_cidade:string){
+    set set_add_cidade(add_cidade:string){
         this.props.add_cidade = add_cidade;
     }  
-    set add_uf(add_uf:string){
+    set set_add_uf(add_uf:string){
         this.props.add_uf = add_uf;
     }
-    set add_cep(add_cep:string){
+    set set_add_cep(add_cep:string){
         this.props.add_cep = add_cep;
     }
-    set add_rua(add_rua:string){
+    set set_add_rua(add_rua:string){
         this.props.add_rua = add_rua;
     }
-    set add_comp(add_comp:string){
+    set set_add_comp(add_comp:string){
         this.props.add_comp = add_comp;
     }
 }

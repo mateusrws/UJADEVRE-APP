@@ -3,24 +3,23 @@
 
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model Address{
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  add_id        String            @id @default(uuid())
-  add_bairro    String    
+model Address {
+  add_createdAt DateTime       @default(now())
+  add_updatedAt DateTime       @default(now())
+  add_id        String         @id @default(uuid())
+  add_bairro    String
   add_cidade    String
   add_uf        String
   add_cep       String
+  add_number    String
   add_rua       String
   add_comp      String?
   congregations Congregation[]
@@ -28,71 +27,71 @@ model Address{
   events        Event[]
 }
 
-model Congregation{
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  con_id        String            @id @default(uuid())
-  con_name      String
-  end_id        String
+model Congregation {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  con_id    String   @id @default(uuid())
+  con_name  String
+  end_id    String
 
-  end           Address           @relation(fields: [end_id],references: [add_id])
-  users         User[]
+  end   Address @relation(fields: [end_id], references: [add_id])
+  users User[]
 }
 
-model User{
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  user_id        String           @id @default(uuid())
+model User {
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user_id        String   @id @default(uuid())
   user_name      String
-  user_data_nasc DateTime 
-  user_bio       String
+  user_data_nasc DateTime
+  user_bio      String
   end_id         String
-  user_cpf       String           @unique
+  user_cpf       String   @unique
   user_foto_url  String?
-  user_email     String           @unique
-  user_tel       String           @unique
+  user_email     String   @unique
+  user_tel       String   @unique
   user_senha     String
   con_id         String
   user_tipo      String
-  user_point     Int              @default(0)
+  user_point     Int      @default(0)
 
-  registrations  Registration[]
-  end            Address          @relation(fields: [end_id],references: [add_id])
-  cong           Congregation     @relation(fields: [con_id], references: [con_id])
+  registrations Registration[]
+  end           Address        @relation(fields: [end_id], references: [add_id])
+  cong          Congregation   @relation(fields: [con_id], references: [con_id])
 }
 
-model News{
-  new_id              String      @id @default(uuid())
-  new_title           String
-  new_content         String
-  createdAt           DateTime    @default(now())
-  new_icon            String
+model News {
+  new_id      String   @id @default(uuid())
+  new_title   String
+  new_content String
+  createdAt   DateTime @default(now())
+  new_icon    String
 }
 
-model Event{
-  eve_id                String    @id @default(uuid())
-  eve_name              String
-  eve_date              DateTime
-  eve_desc              String
-  eve_price             Float     @default(0)
-  eve_point             Int       @default(0)
-  eve_start             DateTime
-  eve_participants      Int       @default(0)
-  eve_max_participants  Int     
-  eve_icon              String   
-  end_id                String
+model Event {
+  eve_id               String   @id @default(uuid())
+  eve_name             String
+  eve_date             DateTime
+  eve_desc             String
+  eve_price            Float    @default(0)
+  eve_point            Int      @default(0)
+  eve_start            DateTime
+  eve_participants     Int      @default(0)
+  eve_max_participants Int
+  eve_icon             String
+  end_id               String
 
-  end                   Address   @relation(fields: [end_id],references: [add_id])
-  registrations         Registration[]           
+  end           Address        @relation(fields: [end_id], references: [add_id])
+  registrations Registration[]
 }
 
-model Registration{
-  reg_id              String    @id @default(uuid())
-  eve_id              String
-  user_id             String
-  reg_remain_value    Float
-  reg_term_url        String
+model Registration {
+  reg_id           String @id @default(uuid())
+  eve_id           String
+  user_id          String
+  reg_remain_value Float
+  reg_term_url     String
 
-  user    User        @relation(fields: [user_id], references: [user_id])
-  event   Event       @relation(fields: [eve_id], references: [eve_id])
+  user  User  @relation(fields: [user_id], references: [user_id])
+  event Event @relation(fields: [eve_id], references: [eve_id])
 }

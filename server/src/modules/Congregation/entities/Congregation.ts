@@ -20,8 +20,8 @@ interface  CongregationSchema{
 
 
 export class Congregation{
-    props: CongregationSchema;
-    _con_id: string;
+    private props: CongregationSchema;
+    private _con_id: string;
 
     constructor(props: Replace<CongregationSchema, { con_createdAt?: Date }>,con_id?: string){
         this.props = {
@@ -31,22 +31,22 @@ export class Congregation{
         this._con_id = con_id || randomUUID();
     }
 
-    get  con_id(){
+    get get_con_id(){
         return this._con_id;
     }
-    get con_name(): string{
+    get get_con_name(): string{
         return this.props.con_name;
     }
-    set con_name(con_name: string){
+    set set_con_name(con_name: string){
         this.props.con_name = con_name;
     }
-    get end_id(): string{
+    get get_end_id(): string{
         return this.props.end_id;
     }
-    set end_id(end_id: string){
+    set set_end_id(end_id: string){
         this.props.end_id = end_id;
     }
-    get createdAt(): Date{
+    get get_createdAt(): Date{
         return this.props.con_createdAt;
     }
 }

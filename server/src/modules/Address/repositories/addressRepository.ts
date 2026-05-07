@@ -1,5 +1,7 @@
 import { Address } from "../entities/Address";
 
-export abstract class addressRepository{
+export abstract class addressRepository {
     abstract create(address: Address): Promise<void>;
+    abstract get(): Promise<Address[]>;
+    abstract getById(add_id: string): Promise<Address | null>;
 }
