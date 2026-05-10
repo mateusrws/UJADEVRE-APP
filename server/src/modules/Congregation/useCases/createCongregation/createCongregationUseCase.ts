@@ -17,13 +17,6 @@ export class createCongregationUseCase{
 
     async execute({ con_name, end_id  }: CreateCongregationRequest){
       
-
-      // const congregationAlreadyExists = await this.congregationRepository.findByname(con_name)
-        
-      // if(congregationAlreadyExists){
-      //     throw new Error("Congregation already exists")
-      // }
-
       const addressExist = await this.addressRepository.getById(end_id)
       if(!addressExist){
         throw new NotFoundException("Endereço não encontrado")

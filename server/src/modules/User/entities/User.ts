@@ -43,8 +43,8 @@ interface UserSchema {
 
 
 export class User{
-    props: UserSchema;
-    _user_id: string;
+    private props: UserSchema;
+    private _user_id: string;
 
     constructor(props: Replace<UserSchema, { user_createdAt?: Date, user_point?: number }>,_user_id?: string){
         this.props = {

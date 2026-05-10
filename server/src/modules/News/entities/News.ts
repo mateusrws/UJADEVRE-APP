@@ -44,13 +44,13 @@ export class News{
     get getDate(){
         return this.props.new_createdAt;
     }
-    set title(title: string){
+    set setTitle(title: string){
         this.props.new_title = title;
     }
-    set content(content: string){
+    set setContent(content: string){
         this.props.new_content = content;
     }
-    set icon(icon: string){
+    set setIcon(icon: string){
         this.props.new_icon = icon;
     }
 }

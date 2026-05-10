@@ -1,6 +1,6 @@
 import { PrismaService } from "../prisma.service";
 import { Injectable } from "@nestjs/common";
-import { userRepository } from "src/modules/User/repositories/userRepository";
+import { putUserInterface, userRepository } from "src/modules/User/repositories/userRepository";
 import { User } from "src/modules/User/entities/User";
 import { PrismaUserMapper } from "../mappers/PrismaUserMapper";
 
@@ -25,5 +25,19 @@ export class PrismaUserRepository implements userRepository {
         const user = await this.prisma.user.findUnique({ where: { user_id } })
         if (!user) return null;
         return PrismaUserMapper.toDomainSingle(user)
+    }
+
+    async put(user_id: string, userReceived: putUserInterface): Promise<String> {
+        await await this.prisma.user.update({
+          where: { user_id },
+          data: userReceived
+        });
+        
+        return "Usuário alterado com sucesso"
+    }
+    async delete(user_id: string): Promise<String>{
+        await this.prisma.user.delete({ where: { user_id }})
+
+        return "Usuário deletado com sucesso"
     }
 }

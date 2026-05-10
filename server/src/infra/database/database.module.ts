@@ -38,7 +38,7 @@ import { PrismaNewsRepository } from "./prisma/repositories/PrismaNewsRepository
             useClass: PrismaUserRepository,
         }
     ],
-    exports: [addressRepository, congregationRepository, userRepository, newsRepository, eventRepository],
+    exports: [PrismaService,addressRepository, congregationRepository, userRepository, newsRepository, eventRepository],
 })
 export class DataBaseModule {
 

@@ -1,5 +1,5 @@
 import { Address } from "src/modules/Address/entities/Address";
-import { addressRepository } from "src/modules/Address/repositories/addressRepository";
+import { addressRepository, putAddressInterface } from "src/modules/Address/repositories/addressRepository";
 import { PrismaService } from "../prisma.service";
 import { PrismaAddressMapper } from "../mappers/PrismaAddressMapper";
 import { Injectable } from "@nestjs/common";
@@ -27,4 +27,18 @@ export class PrismaAddressRepository implements addressRepository {
         return PrismaAddressMapper.toDomainSingle(address)
     }
 
+    async delete(add_id: string): Promise<String> {
+        await this.prisma.address.delete({ where: { add_id } })
+
+        return "Endereço deletado com sucesso!"
+    }
+
+    async update(add_id: string, address: putAddressInterface): Promise<String> {
+        await this.prisma.address.update({
+            where: { add_id },
+            data: address
+        })
+
+        return "Endereço alterado com sucesso"
+    }
 }

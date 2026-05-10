@@ -1,4 +1,4 @@
-import { mockCongregationRepository as MockCongregationRepository } from "../../repositories/mockCongregationRepository";
+import { MockCongregationRepository } from "../../repositories/mockCongregationRepository";
 import { mockAddressRepository as MockAddressRepository } from "../../../Address/repositories/mockAddressRepository";
 import { mockCreateCongregationUseCase as MockCreateCongregationUseCase } from "./mockCreateCongregationUseCase";
 import { Address } from "../../../Address/entities/Address";
@@ -19,7 +19,7 @@ const mockAddress: Address = new Address({
     add_comp: "Teste"
 })
 
-describe('', () => {
+describe('Create Congregation Tests', () => {
     beforeEach(() => {
         mockAddressRepository = new MockAddressRepository()
         mockCongregationRepository = new MockCongregationRepository()
@@ -37,7 +37,7 @@ describe('', () => {
         })
 
         expect(mockCongregationRepository.congregation).toEqual([
-            expect.objectContaining({ _con_id: (await congregation)._con_id })
+            expect.objectContaining({ _con_id: (await congregation).get_con_id })
         ]);
 
 

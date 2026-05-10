@@ -1,6 +1,6 @@
 import { Address } from "../../../Address/entities/Address";
 import { Congregation } from "../../entities/Congregation";
-import { mockCongregationRepository as MockCongregationRepository } from "../../repositories/mockCongregationRepository";
+import { MockCongregationRepository } from "../../repositories/mockCongregationRepository";
 import { mockAddressRepository as MockAddressRepository } from "../../../Address/repositories/mockAddressRepository";
 
 let mockCongregationoRepository: MockCongregationRepository;
@@ -8,19 +8,19 @@ let mockCongregationoRepository: MockCongregationRepository;
 let mockAddressRepository: MockAddressRepository
 
 
-describe('Get Addresses Tests', () => {
+describe('Get Congregation Tests', () => {
     beforeEach(() => {
         mockCongregationoRepository = new MockCongregationRepository()
         mockAddressRepository = new MockAddressRepository()
     })
 
-    it('Should be returned a respect Address', async () => {
+    it('Should be returned a respect Congregations', async () => {
 
-        const addresses = await mockAddressRepository.get(); 
+        const congregation = await mockCongregationoRepository.getCongregations(); 
 
-        expect(addresses).toEqual([]);
+        expect(congregation).toEqual([]);
     });
-    it('Should return an address after creating one', async () => {
+    it('Should return an congregations after creating one', async () => {
 
         
         // * Create a Address Fake

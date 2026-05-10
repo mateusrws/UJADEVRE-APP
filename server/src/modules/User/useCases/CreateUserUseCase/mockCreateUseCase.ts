@@ -1,11 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { userRepository } from "../../repositories/userRepository";
 import { User } from "../../entities/User";
 import { TypeUser } from "types/enums/userTypeEnum";
-import { congregationRepository } from "../../../Congregation/repositories/congregationRepository";
-import { addressRepository } from "../../../Address/repositories/addressRepository";
 import { mockUserRepository } from "../../repositories/mockUserRepository";
-import { mockCongregationRepository } from "src/modules/Congregation/repositories/mockCongregationRepository";
+import { MockCongregationRepository } from "src/modules/Congregation/repositories/mockCongregationRepository";
 import { mockAddressRepository } from "src/modules/Address/repositories/mockAddressRepository";
 
 interface CreateUserRequest {
@@ -24,7 +20,7 @@ interface CreateUserRequest {
 
 
 export class mockCreateUserUseCase {
-  constructor(private mockUserRepository: mockUserRepository, private mockCongregationRepository: mockCongregationRepository, private mockAddressrepository: mockAddressRepository) {}
+  constructor(private mockUserRepository: mockUserRepository, private mockCongregationRepository: MockCongregationRepository, private mockAddressrepository: mockAddressRepository) {}
 
 
   async execute({ user_name, user_email, con_id, end_id, user_desc, user_cpf, user_data_nasc, user_foto_url, user_senha, user_tel, user_tipo }: CreateUserRequest) {

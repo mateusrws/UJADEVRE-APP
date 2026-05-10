@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common"
+import { Inject, Injectable } from "@nestjs/common"
 import { addressRepository } from "../../repositories/addressRepository"
 
 interface getAddressSchema{
@@ -13,7 +13,7 @@ interface getAddressSchema{
 
 @Injectable()
 export class getAddressByIdUseCase{
-    constructor(private addressRepository: addressRepository){}
+    constructor(@Inject(addressRepository) private addressRepository: addressRepository){}
 
     async execute(add_id: string): Promise<getAddressSchema | undefined>{
         const address = await this.addressRepository.getById(add_id)

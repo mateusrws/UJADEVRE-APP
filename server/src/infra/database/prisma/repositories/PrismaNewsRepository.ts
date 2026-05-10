@@ -1,9 +1,6 @@
 import { PrismaService } from "../prisma.service";
 import { Injectable } from "@nestjs/common";
-import { eventRepository } from "src/modules/Event/repositories/eventRepository";
-import { PrismaEventMapper } from "../mappers/PrismaEventMapper";
-import { Event } from "src/modules/Event/entities/Event";
-import { newsRepository } from "src/modules/News/repositories/newsRepository";
+import { newsRepository, putNewsInterface } from "src/modules/News/repositories/newsRepository";
 import { News } from "src/modules/News/entities/News";
 import { PrismaNewsMapper } from "../mappers/PrismaNewsMapper";
 
@@ -28,5 +25,20 @@ export class PrismaNewsRepository implements newsRepository {
         const news = await this.prisma.news.findUnique({ where: { new_id } })
         if (!news) return null;
         return PrismaNewsMapper.toDomainSingle(news)
+    }
+
+    async put(new_id: string, newsReceived: putNewsInterface): Promise<String> {
+        const news = await this.prisma.news.update({
+            where: { new_id },
+            data: newsReceived
+        })
+
+        return "Notícia alterada com sucesso"
+    }
+
+    async delete(new_id: string): Promise<String> {
+        const deleteNews = await this.prisma.news.delete({ where: { new_id }})
+
+        return "Notícia deletada com sucesso"
     }
 }

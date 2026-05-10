@@ -5,7 +5,7 @@ let createNewsUseCase: CreateNewsUseCase;
 
 let mockNewsRepository: MockNewsRepository;
 
-describe('', () => {
+describe('Create a News Tests', () => {
     beforeEach(() => {
         mockNewsRepository = new MockNewsRepository()
         createNewsUseCase = new CreateNewsUseCase(mockNewsRepository)
@@ -21,7 +21,7 @@ describe('', () => {
         })
 
         expect(mockNewsRepository.news).toEqual([
-            expect.objectContaining({ _new_id: (await news)._new_id })
+            expect.objectContaining({ _new_id: news.getId})
         ]);
 
 

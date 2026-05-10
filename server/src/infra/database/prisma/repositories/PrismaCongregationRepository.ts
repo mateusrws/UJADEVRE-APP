@@ -2,13 +2,31 @@ import { PrismaService } from "../prisma.service";
 import { Injectable } from "@nestjs/common";
 import { Congregation } from "src/modules/Congregation/entities/Congregation";
 import { PrismaCongregationMapper } from "../mappers/PrismaCongregationMapper";
-import { congregationRepository } from "src/modules/Congregation/repositories/congregationRepository";
+import { congregationRepository, putCongregationInterface } from "src/modules/Congregation/repositories/congregationRepository";
 
 @Injectable()
 export class PrismaCongregationRepository implements congregationRepository {
 
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
+
+
+    async deleteCongregation(con_id: string): Promise<String> {
+        await this.prisma.congregation.delete({ where: { con_id } })
+
+        return "Congregação deletada com sucesso!"
+    }
+
+
+    async putCongregation(con_id: string, congregationReceived: putCongregationInterface): Promise<String> {
+
+        await this.prisma.congregation.update({
+            where: { con_id },
+            data: congregationReceived
+        })
+
+        return "Congregação alterada com sucesso"
+    }
 
     async getCongregations(): Promise<Congregation[] | null> {
         const congregations = await this.prisma.congregation.findMany()

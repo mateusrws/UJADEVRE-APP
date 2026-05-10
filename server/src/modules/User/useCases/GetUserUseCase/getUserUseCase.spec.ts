@@ -2,7 +2,7 @@ import { mockUserRepository as MockUserRepository } from "../../repositories/moc
 import { getUserUseCase as GetUserUseCase } from "./getUserUseCase";
 import { createUserUseCase as CreateUserUseCase } from "../CreateUserUseCase/createUserUseCase";
 import { TypeUser } from "types/enums/userTypeEnum";
-import { mockCongregationRepository as MockCongregationRepository } from "../../../Congregation/repositories/mockCongregationRepository";
+import { MockCongregationRepository } from "../../../Congregation/repositories/mockCongregationRepository";
 import { mockAddressRepository as MockAddressRepository } from "../../../Address/repositories/mockAddressRepository";
 import { Congregation } from "../../../Congregation/entities/Congregation";
 import { Address } from "../../../Address/entities/Address";
