@@ -9,7 +9,7 @@ export class CreateNewsBody {
     @IsNotEmpty()
     new_title: string
 
-    @IsDate()
+    @IsString()
     @IsNotEmpty()
     new_content: string
 

@@ -28,15 +28,24 @@ export class PrismaUserRepository implements userRepository {
     }
 
     async put(user_id: string, userReceived: putUserInterface): Promise<String> {
-        await await this.prisma.user.update({
-          where: { user_id },
-          data: userReceived
+        await this.prisma.user.update({
+            where: { user_id },
+            data: {
+                user_name: userReceived.user_name,
+                user_email: userReceived.user_email,
+                user_tel: userReceived.user_tel,
+                user_data_nasc: new Date(userReceived.user_data_nasc),
+                user_bio: userReceived.user_desc,
+                user_cpf: userReceived.user_cpf,
+                user_foto_url: userReceived.user_foto_url,
+                con_id: userReceived.con_id,
+                end_id: userReceived.end_id,
+            }
         });
-        
         return "Usuário alterado com sucesso"
     }
-    async delete(user_id: string): Promise<String>{
-        await this.prisma.user.delete({ where: { user_id }})
+    async delete(user_id: string): Promise<String> {
+        await this.prisma.user.delete({ where: { user_id } })
 
         return "Usuário deletado com sucesso"
     }

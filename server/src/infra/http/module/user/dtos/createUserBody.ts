@@ -1,6 +1,6 @@
 import { IsDate, IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from "class-validator"
 import { TypeUser } from "types/enums/userTypeEnum"
-export class CreateUserBody{
+export class CreateUserBody {
     @IsString()
     @IsNotEmpty()
     con_id: string
@@ -31,7 +31,6 @@ export class CreateUserBody{
     @IsNotEmpty()
     user_tipo: TypeUser
 
-    @IsDate()
     @IsNotEmpty()
     user_data_nasc: Date
 

@@ -1,10 +1,9 @@
-import { IsDate, IsDecimal, IsInt, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsInt, IsNotEmpty, IsNumber, IsString } from "class-validator"
 export class CreateEventBody {
     @IsString()
     @IsNotEmpty()
     eve_nome: string
 
-    @IsDate()
     @IsNotEmpty()
     eve_data_and_time: Date
 
@@ -12,7 +11,7 @@ export class CreateEventBody {
     @IsNotEmpty()
     eve_desc: string
 
-    @IsDecimal()
+    @IsNumber()
     @IsNotEmpty()
     eve_price: number
 

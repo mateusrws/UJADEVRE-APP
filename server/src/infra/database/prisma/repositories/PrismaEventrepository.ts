@@ -9,7 +9,7 @@ import { Event } from "src/modules/Event/entities/Event";
 export class PrismaEventRepository implements eventRepository {
 
     constructor(private prisma: PrismaService) { }
-    
+
     async create(event: Event): Promise<void> {
         const eventRaw = PrismaEventMapper.toPrisma(event)
         await this.prisma.event.create({
@@ -29,8 +29,21 @@ export class PrismaEventRepository implements eventRepository {
     }
 
     async put(eve_id: string, event: putEventInterface): Promise<String> {
-        await this.prisma.event.update({where: {eve_id}, data: event})
-
+        await this.prisma.event.update({
+            where: { eve_id },
+            data: {
+                eve_name: event.eve_nome,
+                eve_date: new Date(event.eve_data_and_time),
+                eve_start: new Date(event.eve_data_and_time),
+                eve_desc: event.eve_desc,
+                eve_price: event.eve_price,
+                eve_point: event.eve_point,
+                end_id: event.end_id,
+                eve_max_participants: event.eve_max_participants,
+                eve_participants: event.eve_participants,
+                eve_icon: event.eve_icon,
+            }
+        });
         return "Evento alterado com sucesso"
     }
 
