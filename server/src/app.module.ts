@@ -6,9 +6,17 @@ import { UserModule } from './infra/http/module/user/user.module';
 import { NewsModule } from './infra/http/module/news/news.module';
 import { EventModule } from './infra/http/module/event/event.module';
 import { RegistrationModule } from './infra/http/module/registration/registration.module';
+import { AuthModule } from './infra/http/module/auth/auth.module';
+import { JwtAuthGuard } from './infra/http/module/auth/guards/JwtAuth.guard';
+import { APP_GUARD } from '@nestjs/core';
 @Module({
-  imports: [DataBaseModule, AdressModule, CongregationModule, UserModule, NewsModule, EventModule, RegistrationModule],
+  imports: [DataBaseModule, AdressModule, CongregationModule, UserModule, NewsModule, EventModule, RegistrationModule, AuthModule],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule { }

@@ -24,7 +24,7 @@ export class PrismaUserMapper {
     }
 
     static toDomain(users: UserRaw[]): User[] {
-        return users.map(user => new User(
+        return users.map(user => User.reconstitute(
             {
                 con_id: user.con_id,
                 end_id: user.end_id,
@@ -45,7 +45,7 @@ export class PrismaUserMapper {
     }
 
     static toDomainSingle(user: UserRaw): User {
-        return new User(
+        return User.reconstitute(
             {
                 con_id: user.con_id,
                 end_id: user.end_id,

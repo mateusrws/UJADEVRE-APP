@@ -1,9 +1,9 @@
 import { Address } from "../entities/Address"
 
 
-type overWrite = Partial<Address>
+type Override = Partial<Address>
 
-export const makeAddress = ()=>{
+export const makeAddress = ({} : Override)=>{
     return new Address({
         add_bairro: "Teste",
         add_cep: "Teste", 

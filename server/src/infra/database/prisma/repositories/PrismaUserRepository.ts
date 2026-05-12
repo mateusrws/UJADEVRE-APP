@@ -49,4 +49,10 @@ export class PrismaUserRepository implements userRepository {
 
         return "Usuário deletado com sucesso"
     }
+
+    async findByEmail(user_email: string): Promise<User | null> {
+        const user = await this.prisma.user.findUnique({ where: { user_email } });
+        if (!user) return null;
+        return PrismaUserMapper.toDomainSingle(user);
+    }
 }

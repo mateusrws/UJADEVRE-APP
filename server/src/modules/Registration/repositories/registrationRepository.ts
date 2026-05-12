@@ -14,6 +14,7 @@ export interface putRegistrationInterface{
 export abstract class registrationRepository{
     abstract create(registration: Registration): Promise<void>;
     abstract get(): Promise<Registration[]>;
+    abstract getMyRegistrations(userId: string, page: number, perPage: number): Promise<Registration[]>;
     abstract getById(reg_id: string): Promise<Registration | null>;
     abstract delete(reg_id: string): Promise<String>;
     abstract update(reg_id: string, registration: putRegistrationInterface): Promise<Registration | String>;

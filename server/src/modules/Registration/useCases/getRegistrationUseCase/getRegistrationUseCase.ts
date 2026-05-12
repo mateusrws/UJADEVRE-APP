@@ -3,13 +3,29 @@ import { registrationRepository } from "../../repositories/registrationRepositor
 import { Registration } from "../../entities/Registration"
 
 
-
+interface GetManyRegistratinos{
+    userId: string,
+    page?: string,
+    perPage?: string
+}
  
 @Injectable()
 export class getRegistrationsUseCase{
     constructor(@Inject(registrationRepository) private registrationRepository: registrationRepository){}
 
-    async execute(): Promise<Registration[]>{
+    async executeMyRegistrations({ userId, page, perPage} : GetManyRegistratinos): Promise<Registration[]>{
+
+        const DEFAULT_PAGE = 1;
+        const DEFAULT_PER_PAGE = 20;
+
+        const currentPage = Number(page) || DEFAULT_PAGE;
+        const currentePerPage = Number(perPage) || DEFAULT_PER_PAGE;
+
+        const registrations = await this.registrationRepository.getMyRegistrations(userId, currentPage, currentePerPage)
+        return registrations
+    }
+
+    async execute():Promise<Registration[]>{
         const registrations = await this.registrationRepository.get()
         return registrations
     }

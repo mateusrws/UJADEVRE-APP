@@ -20,8 +20,8 @@ interface UserSchema {
 type Override = Partial<UserSchema>
 
 export const makeUser = (override: Override = {}) => {
-    const addressFake = makeAddress()
-    const congFake = makeCongregation()
+    const addressFake = makeAddress({})
+    const congFake = makeCongregation({})
     return new User({
         con_id: congFake.get_con_id,
         end_id: addressFake.get_add_id,

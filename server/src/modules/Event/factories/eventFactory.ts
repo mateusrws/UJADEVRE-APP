@@ -3,10 +3,10 @@ import { Event } from "../entities/Event"
 
 
 
-type overWrite = Partial<Event>
+type Override = Partial<Event>
 
-export const makeEvent = ()=>{
-    const addressFake = makeAddress()
+export const makeEvent = ({ }: Override)=>{
+    const addressFake = makeAddress({})
     return new Event({
         end_id: addressFake.get_add_id,
         eve_data_and_time: new Date(),

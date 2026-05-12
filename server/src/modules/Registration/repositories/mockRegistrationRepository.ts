@@ -18,6 +18,10 @@ export class mockRegistrationRepository implements registrationRepository {
         return this.registrations.find(r => r.get_reg_id === reg_id) ?? null;
     }
 
+    async getMyRegistrations(userId: string, page: number, perPage: number): Promise<Registration[]> {
+        return this.registrations.filter(r => r.get_user_id === userId).slice((page-1) * perPage, page*perPage)
+    }
+
     async update(reg_id: string, registration: putRegistrationInterface): Promise<Registration | String> {
         const i = this.registrations.findIndex(r => r.get_reg_id === reg_id)
 
