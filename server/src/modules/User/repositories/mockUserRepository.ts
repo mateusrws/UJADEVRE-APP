@@ -45,4 +45,8 @@ export class mockUserRepository implements userRepository {
 
         return "Usuário deletado com sucesso"
     }
+
+    async findByEmail(user_email: string): Promise<User | null> {
+        return this.users.find(u => u.get_user_email=== user_email) ?? null;
+    }
 }

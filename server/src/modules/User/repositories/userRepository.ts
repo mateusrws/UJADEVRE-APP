@@ -18,4 +18,5 @@ export abstract class userRepository {
     abstract getById(user_id: string): Promise<User | null>;
     abstract put(user_id: string, userReceived: putUserInterface): Promise<String>;
     abstract delete(user_id: string): Promise<String>;
+    abstract findByEmail(user_email: string): Promise<User | null>;
 }

@@ -91,6 +91,7 @@ model Registration {
   user_id          String
   reg_remain_value Float
   reg_term_url     String
+  reg_is_valid     Boolean
 
   user  User  @relation(fields: [user_id], references: [user_id])
   event Event @relation(fields: [eve_id], references: [eve_id])

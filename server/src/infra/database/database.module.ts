@@ -10,36 +10,27 @@ import { eventRepository } from "src/modules/Event/repositories/eventRepository"
 import { PrismaEventRepository } from "./prisma/repositories/PrismaEventrepository";
 import { newsRepository } from "src/modules/News/repositories/newsRepository";
 import { PrismaNewsRepository } from "./prisma/repositories/PrismaNewsRepository";
+import { registrationRepository } from "src/modules/Registration/repositories/registrationRepository";
+import { PrismaRegistrationRepository } from "./prisma/repositories/PrismaRegistrationRepository";
 
 @Module({
-    providers: [PrismaService,
-        {
-            provide: addressRepository,
-            useClass: PrismaAddressRepository
-        },
-        {
-            provide: congregationRepository,
-            useClass: PrismaCongregationRepository,
-        },
-        {
-            provide: userRepository,
-            useClass: PrismaUserRepository,
-        },
-        {
-            provide: eventRepository,
-            useClass: PrismaEventRepository,
-        },
-        {
-            provide: newsRepository,
-            useClass: PrismaNewsRepository,
-        },
-        {
-            provide: userRepository,
-            useClass: PrismaUserRepository,
-        }
+    providers: [
+        PrismaService,
+        { provide: addressRepository, useClass: PrismaAddressRepository },
+        { provide: congregationRepository, useClass: PrismaCongregationRepository },
+        { provide: userRepository, useClass: PrismaUserRepository },
+        { provide: eventRepository, useClass: PrismaEventRepository },
+        { provide: newsRepository, useClass: PrismaNewsRepository },
+        { provide: registrationRepository, useClass: PrismaRegistrationRepository },
     ],
-    exports: [PrismaService,addressRepository, congregationRepository, userRepository, newsRepository, eventRepository],
+    exports: [
+        PrismaService,
+        addressRepository,
+        congregationRepository,
+        userRepository,
+        newsRepository,
+        eventRepository,
+        registrationRepository,
+    ],
 })
-export class DataBaseModule {
-
-}
+export class DataBaseModule { }
