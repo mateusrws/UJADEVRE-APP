@@ -8,10 +8,6 @@ export class createRegistrationBody{
     @IsNotEmpty()
     eve_id: string
 
-    @IsNumber()
-    @IsNotEmpty()
-    reg_remain_value: number
-
     @IsString()
     @IsNotEmpty()
     @IsUrl()

@@ -3,6 +3,7 @@ import { createRegistrationUseCase as CreateRegistrationUseCase } from "./create
 import { mockUserRepository as MockUserRepository } from "../../../User/repositories/mockUserRepository";
 import { mockAddressRepository as MockAddressRepository } from "../../../Address/repositories/mockAddressRepository";
 import { mockEventRepository as MockEventRepository } from "../../../Event/repositories/mockEventeRepository";
+import { getEventUseCase as GetEventUseCase } from "../../../Event/useCases/GetEventUseCase/getEventUseCase";
 import { Address } from "../../../Address/entities/Address";
 import { User } from "../../../User/entities/User";
 import { Event } from "../../../Event/entities/Event";
@@ -13,6 +14,7 @@ let mockRegistrationRepository: MockRegistrationRepository;
 let mockUserRepository: MockUserRepository;
 let mockAddressRepository: MockAddressRepository;
 let mockEventRepository: MockEventRepository;
+let getEventUseCase: GetEventUseCase;
 
 let mockAddress: Address;
 let mockUser: User;
@@ -24,8 +26,8 @@ describe('Create Registration Tests', () => {
         mockUserRepository = new MockUserRepository();
         mockAddressRepository = new MockAddressRepository();
         mockEventRepository = new MockEventRepository();
-
-        createRegistrationUseCase = new CreateRegistrationUseCase(mockRegistrationRepository);
+        getEventUseCase = new GetEventUseCase(mockEventRepository);
+        createRegistrationUseCase = new CreateRegistrationUseCase(mockRegistrationRepository, getEventUseCase);
 
         // Mock Address
         mockAddress = new Address({
@@ -75,7 +77,6 @@ describe('Create Registration Tests', () => {
         const registration = await createRegistrationUseCase.execute({
             eve_id: mockEvent.get_id,
             user_id: mockUser.get_user_id,
-            reg_remain_value: 20.00,
             reg_term_url: "https://termo.teste.com",
         });
 

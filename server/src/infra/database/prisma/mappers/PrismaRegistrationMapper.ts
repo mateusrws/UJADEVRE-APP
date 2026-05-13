@@ -10,6 +10,7 @@ export class PrismaRegistrationMapper {
             user_id: registration.get_user_id,
             reg_remain_value: registration.get_reg_remain_value,
             reg_term_url: registration.get_reg_term_url,
+            reg_is_valid: registration.get_reg_isValid,
         }
     }
 
@@ -24,6 +25,7 @@ export class PrismaRegistrationMapper {
                 user_id: r.user_id,
                 reg_remain_value: r.reg_remain_value,
                 reg_term_url: r.reg_term_url,
+                reg_isValid: r.reg_is_valid,
             },
             r.reg_id
         );

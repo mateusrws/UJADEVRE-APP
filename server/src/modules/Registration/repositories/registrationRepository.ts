@@ -4,11 +4,11 @@ import { Registration } from "../entities/Registration";
 
 
 export interface putRegistrationInterface{
-    user_id: string,
-    eve_id: string,
-    reg_term_url: string,
-    reg_remain_value: number,
-    reg_isValid: boolean
+    user_id?: string,
+    eve_id?: string,
+    reg_term_url?: string,
+    reg_remain_value?: number,
+    reg_isValid?: boolean
 }
 
 export abstract class registrationRepository{
@@ -19,4 +19,5 @@ export abstract class registrationRepository{
     abstract delete(reg_id: string): Promise<String>;
     abstract update(reg_id: string, registration: putRegistrationInterface): Promise<Registration | String>;
     abstract updateRemainValue(reg_id: string, value: number): Promise<String>;
+    abstract toggleIsValid(reg_id: string): Promise<String>;
 }

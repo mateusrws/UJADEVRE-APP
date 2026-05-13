@@ -54,4 +54,27 @@ export class PrismaRegistrationRepository implements registrationRepository {
 
         return "Valor atualizado com sucesso";
     }
+
+    async getMyRegistrations(userId: string, page: number, perPage: number): Promise<Registration[]> {
+        const registration = await this.prisma.registration.findMany({ where: { user_id: userId }, take: perPage,skip: (page-1)*perPage})
+
+        return registration.map(PrismaRegistrationMapper.toDomainSingle)
+    }
+
+    async toggleIsValid(reg_id: string): Promise<String> {
+        const result = await this.prisma.registration.findUnique({ 
+            where: { reg_id } 
+        });
+
+        if (!result) {
+            throw new Error("Registro não encontrado");
+        }
+
+        await this.prisma.registration.update({ 
+            where: { reg_id }, 
+            data: { reg_is_valid: !result.reg_is_valid }
+        });
+
+        return "Validade do ingresso alterada";
+    }
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common"
+import { BadRequestException, Inject, Injectable } from "@nestjs/common"
 import { addressRepository } from "../../repositories/addressRepository"
 
 interface getAddressSchema{
@@ -15,10 +15,10 @@ interface getAddressSchema{
 export class getAddressByIdUseCase{
     constructor(@Inject(addressRepository) private addressRepository: addressRepository){}
 
-    async execute(add_id: string): Promise<getAddressSchema | undefined>{
+    async execute(add_id: string): Promise<getAddressSchema>{
         const address = await this.addressRepository.getById(add_id)
         if(!address){
-            return undefined
+            throw new BadRequestException("Endereço não encontrado")
         }
         return {
             add_bairro: address.get_add_bairro,

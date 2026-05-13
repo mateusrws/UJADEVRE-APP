@@ -7,18 +7,19 @@ import { putRegistrationInterface } from "src/modules/Registration/repositories/
 import { deleteRegistrationByIdUseCase } from "src/modules/Registration/useCases/deleteRegistrationUseCase/deleteRegistrationUseCase";
 import { paymentBody } from "./dtos/paymentBody";
 import { paymentRegistrationUseCase } from "src/modules/Registration/useCases/paymentRegistration/paymentRegistrationUseCase";
+import { toggleIsValdUseCase } from "src/modules/Registration/useCases/toggleIsValidUseCase/toggleIsValidUseCase";
 
 
 @Controller('registration')
 export class RegistrationController {
 
-    constructor(private createRegistration: createRegistrationUseCase, private getRegistrationUseCase: getRegistrationsUseCase, private putRegistrationUseCase: putRegistrationUseCase, private deleteRegistrationUseCase: deleteRegistrationByIdUseCase, private paymentRegistrationUseCase: paymentRegistrationUseCase) { }
+    constructor(private createRegistration: createRegistrationUseCase, private getRegistrationUseCase: getRegistrationsUseCase, private putRegistrationUseCase: putRegistrationUseCase, private deleteRegistrationUseCase: deleteRegistrationByIdUseCase, private paymentRegistrationUseCase: paymentRegistrationUseCase, private toggleIsValidUseCase: toggleIsValdUseCase) { }
 
     @Post('')
     async create(@Body() body: createRegistrationBody) {
 
-        const { eve_id, reg_remain_value, reg_term_url, user_id } = body
-        const user = await this.createRegistration.execute({ eve_id, user_id, reg_remain_value, reg_term_url })
+        const { eve_id, reg_term_url, user_id } = body
+        const user = await this.createRegistration.execute({ eve_id, user_id, reg_term_url })
         return user
     }
 
@@ -51,5 +52,9 @@ export class RegistrationController {
     async updateRemainValue(@Param("reg_id") reg_id: string, @Body() body: paymentBody){
         const payment = await this.paymentRegistrationUseCase.execute(reg_id, body.value)
         return payment;
+    }
+    @Patch('term/:reg_id')
+    async toggleIsVald(@Param("reg_id") reg_id:string){
+        const result = await this.toggleIsValidUseCase.execute(reg_id)  
     }
 }

@@ -44,7 +44,7 @@ model User {
   user_id        String   @id @default(uuid())
   user_name      String
   user_data_nasc DateTime
-  user_bio      String
+  user_bio       String
   end_id         String
   user_cpf       String   @unique
   user_foto_url  String?
@@ -86,7 +86,7 @@ model Event {
 }
 
 model Registration {
-  reg_id           String @id @default(uuid())
+  reg_id           String  @id @default(uuid())
   eve_id           String
   user_id          String
   reg_remain_value Float

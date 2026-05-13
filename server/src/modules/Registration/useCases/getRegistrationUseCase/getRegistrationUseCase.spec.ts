@@ -50,7 +50,6 @@ describe('Get Address Tests', () => {
         mockAddressRepository = new MockAddressRepository();
         mockEventRepository = new MockEventRepository();
         getRegistrationsUseCase = new GetRegistrationsUseCase(mockRegistrationRepository)
-        createRegistrationUseCase = new CreateRegistrationUseCase(mockRegistrationRepository)
 
         // Mock Address
         mockAddress = new Address({

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { eventRepository } from "../../repositories/eventRepository";
 
 @Injectable()
@@ -22,7 +22,7 @@ export class getEventUseCase {
 
     async executeById(eve_id: string) {
         const event = await this.eventRepository.getById(eve_id);
-        if (!event) throw new Error("Event not found!");
+        if (!event) throw new BadRequestException("Event not found!");
         return {
             eve_id: event.get_id,
             eve_nome: event.get_nome,
