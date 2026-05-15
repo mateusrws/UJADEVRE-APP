@@ -18,30 +18,30 @@ export class mockEventRepository implements eventRepository {
         return this.events.find(e => e.get_id === eve_id) ?? null;
     }
 
-    async put(eve_id: string, eventReceived: putEventInterface): Promise<String>{
+    async put(eve_id: string, eventReceived: putEventInterface): Promise<String> {
         const event = this.events.find(c => c._eve_id == eve_id)
 
-        if(!event) throw new NotFoundException("Evento não existe")
+        if (!event) throw new NotFoundException("Evento não existe")
 
-        event.set_dataAndTime = eventReceived.eve_data_and_time
-        event.set_desc = eventReceived.eve_desc
-        event.set_endId = eventReceived.end_id
-        event.set_icon = eventReceived.eve_icon
-        event.set_maxParticipants = eventReceived.eve_max_participants
-        event.set_nome = eventReceived.eve_nome
-        event.set_participants = eventReceived.eve_participants
-        event.set_point = eventReceived.eve_point
-        event.set_price = eventReceived.eve_price
+        if (eventReceived.eve_data_and_time !== undefined) event.set_dataAndTime = eventReceived.eve_data_and_time
+        if (eventReceived.eve_desc !== undefined) event.set_desc = eventReceived.eve_desc
+        if (eventReceived.end_id !== undefined) event.set_endId = eventReceived.end_id
+        if (eventReceived.eve_icon !== undefined) event.set_icon = eventReceived.eve_icon
+        if (eventReceived.eve_max_participants !== undefined) event.set_maxParticipants = eventReceived.eve_max_participants
+        if (eventReceived.eve_nome !== undefined) event.set_nome = eventReceived.eve_nome
+        if (eventReceived.eve_participants !== undefined) event.set_participants = eventReceived.eve_participants
+        if (eventReceived.eve_point !== undefined) event.set_point = eventReceived.eve_point
+        if (eventReceived.eve_price !== undefined) event.set_price = eventReceived.eve_price
 
-        
+
         return "Evento alterado com sucesso"
     }
 
-    
+
     async delete(eve_id: string): Promise<String> {
         const event = this.events.find(c => c._eve_id == eve_id)
 
-        if(!event) throw new NotFoundException("Evento não existe")
+        if (!event) throw new NotFoundException("Evento não existe")
 
         this.events.splice(this.events.indexOf(event), 1);
 

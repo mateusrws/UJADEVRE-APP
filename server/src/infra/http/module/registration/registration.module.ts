@@ -7,11 +7,27 @@ import { putRegistrationUseCase } from "src/modules/Registration/useCases/putReg
 import { deleteRegistrationByIdUseCase } from "src/modules/Registration/useCases/deleteRegistrationUseCase/deleteRegistrationUseCase";
 import { paymentRegistrationUseCase } from "src/modules/Registration/useCases/paymentRegistration/paymentRegistrationUseCase";
 import { getEventUseCase } from "src/modules/Event/useCases/GetEventUseCase/getEventUseCase";
+import { putEventUseCase } from "src/modules/Event/useCases/putEventUseCase/putEventUseCase";
 import { toggleIsValdUseCase } from "src/modules/Registration/useCases/toggleIsValidUseCase/toggleIsValidUseCase";
+import { checkInUseCase } from "src/modules/Registration/useCases/checkInUseCase/checkInUseCase";
+import { ifAddressExist } from "src/utils/ifAddressExist";
+import { getAddressByIdUseCase } from "src/modules/Address/useCases/getAddressByIdUseCase/getAddressByIdUseCase";
 
 @Module({
     imports: [DataBaseModule],
     controllers: [RegistrationController],
-    providers: [createRegistrationUseCase, getRegistrationsUseCase, putRegistrationUseCase, deleteRegistrationByIdUseCase, paymentRegistrationUseCase, getEventUseCase, toggleIsValdUseCase]
+    providers: [
+        createRegistrationUseCase,
+        getRegistrationsUseCase,
+        putRegistrationUseCase,
+        deleteRegistrationByIdUseCase,
+        paymentRegistrationUseCase,
+        getEventUseCase,
+        putEventUseCase,
+        ifAddressExist,
+        getAddressByIdUseCase,
+        toggleIsValdUseCase,
+        checkInUseCase
+    ]
 })
 export class RegistrationModule { }

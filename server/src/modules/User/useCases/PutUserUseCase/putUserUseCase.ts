@@ -13,8 +13,6 @@ export class putUserUseCase {
       throw new NotFoundException("Usuário não encontrado")
     }
 
-    await this.ifAddressExist.validateSomething(userReceived.end_id)
-
     const event = await this.userRepository.put(user_id, userReceived)
     return event
   }

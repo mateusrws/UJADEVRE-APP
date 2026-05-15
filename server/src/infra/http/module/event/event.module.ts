@@ -7,10 +7,19 @@ import { putEventUseCase } from "src/modules/Event/useCases/putEventUseCase/putE
 import { ifAddressExist } from "src/utils/ifAddressExist";
 import { getAddressByIdUseCase } from "src/modules/Address/useCases/getAddressByIdUseCase/getAddressByIdUseCase";
 import { deleteEventByIdUseCase } from "src/modules/Event/useCases/deleteEventUseCase/deleteEventUseCase";
+import { createAddressUseCase } from "src/modules/Address/useCases/createAddresUseCase/createAddresUseCase";
 
 @Module({
     imports: [DataBaseModule],
     controllers: [EventController],
-    providers: [createEventUseCase, getEventUseCase, putEventUseCase, ifAddressExist, getAddressByIdUseCase, deleteEventByIdUseCase]
+    providers: [
+        createEventUseCase,
+        getEventUseCase,
+        putEventUseCase,
+        ifAddressExist,
+        getAddressByIdUseCase,
+        deleteEventByIdUseCase,
+        createAddressUseCase
+    ]
 })
 export class EventModule { }

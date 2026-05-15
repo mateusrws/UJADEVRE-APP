@@ -7,10 +7,11 @@ import { putUserUseCase } from "src/modules/User/useCases/PutUserUseCase/putUser
 import { ifAddressExist } from "src/utils/ifAddressExist";
 import { getAddressByIdUseCase } from "src/modules/Address/useCases/getAddressByIdUseCase/getAddressByIdUseCase";
 import { deleteUserByIdUseCase } from "src/modules/User/useCases/deleteUserUseCase/deleteUserUseCase";
+import { createAddressUseCase } from "src/modules/Address/useCases/createAddresUseCase/createAddresUseCase";
 
 @Module({
     imports: [DataBaseModule],
     controllers: [UserController],
-    providers: [createUserUseCase, getUserUseCase, putUserUseCase, ifAddressExist, getAddressByIdUseCase, deleteUserByIdUseCase]
+    providers: [createUserUseCase, getUserUseCase, putUserUseCase, ifAddressExist, getAddressByIdUseCase, deleteUserByIdUseCase, createAddressUseCase]
 })
 export class UserModule {}

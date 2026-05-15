@@ -10,13 +10,22 @@ import { deleteEventByIdUseCase } from "src/modules/Event/useCases/deleteEventUs
 @Controller('event')
 export class EventController {
 
-    constructor(private createEventUseCase: createEventUseCase, private getEventUseCase: getEventUseCase, private putEventUseCase: putEventUseCase, private deleteEventUseCase: deleteEventByIdUseCase ) { }
+    constructor(private createEventUseCase: createEventUseCase, private getEventUseCase: getEventUseCase, private putEventUseCase: putEventUseCase, private deleteEventUseCase: deleteEventByIdUseCase) { }
 
     @Post('')
     async createEvent(@Body() body: CreateEventBody) {
 
+        console.log('📥 Received event creation request:', body)
+        console.log('📍 end_id from body:', body.end_id)
+
         const { end_id, eve_data_and_time, eve_desc, eve_icon, eve_max_participants, eve_nome, eve_participants, eve_point, eve_price } = body
+
+        console.log('📍 end_id after destructuring:', end_id)
+
         const event = await this.createEventUseCase.execute({ end_id, eve_data_and_time, eve_desc, eve_icon, eve_max_participants, eve_nome, eve_participants, eve_point, eve_price })
+
+        console.log('✅ Event created:', event)
+
         return event
     }
 
@@ -28,20 +37,20 @@ export class EventController {
     }
 
     @Get()
-    async getEvents(){
+    async getEvents() {
         const events = await this.getEventUseCase.execute()
         return events
     }
 
     @Put("/:eve_id")
-    async putEvent(@Param("eve_id") con_id, @Body() body: putEventInterface){
+    async putEvent(@Param("eve_id") con_id, @Body() body: putEventInterface) {
         const putCongregation = await this.putEventUseCase.execute(con_id, body)
 
         return putCongregation
     }
 
     @Delete("/:eve_id")
-    async deleteEvent(@Param("eve_id") eve_id: string){
+    async deleteEvent(@Param("eve_id") eve_id: string) {
         await this.deleteEventUseCase.execute(eve_id)
 
         return "Evento deletado com sucesso"

@@ -1,4 +1,5 @@
 import { Address } from "../entities/Address";
+import { CreateAddressRequest } from "../useCases/createAddresUseCase/createAddresUseCase";
 
 export interface putAddressInterface{
     add_bairro:string
@@ -16,4 +17,5 @@ export abstract class addressRepository {
     abstract getById(add_id: string): Promise<Address | null>;
     abstract delete(add_id: string): Promise<String>;
     abstract update(add_id: string, address: putAddressInterface): Promise<Address | String>;
+    abstract getByObject(address: CreateAddressRequest): Promise<Address | null>;
 }

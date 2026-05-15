@@ -15,7 +15,10 @@ export class putEventUseCase {
       throw new NotFoundException("Evento não encontrado")
     }
 
-    await this.ifAddressExist.validateSomething(eventReceived.end_id)
+    // Only validate address if end_id is being updated
+    if (eventReceived.end_id !== undefined) {
+      await this.ifAddressExist.somethingValidate(eventReceived.end_id)
+    }
 
     const event = await this.eventRepository.put(eve_id, eventReceived)
     return event

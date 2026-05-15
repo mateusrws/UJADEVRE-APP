@@ -4,7 +4,7 @@ import { Address } from "../../entities/Address";
 
 
 
-interface CreateAddressRequest{
+export interface CreateAddressRequest {
     add_bairro: string
     add_cidade: string
     add_uf: string
@@ -16,14 +16,15 @@ interface CreateAddressRequest{
 
 
 @Injectable()
-export class createAddressUseCase{
-    constructor(private addressRepository: addressRepository){}
+export class createAddressUseCase {
+    constructor(private addressRepository: addressRepository) { }
 
-    
 
-    async execute({ add_bairro, add_cep,add_cidade,add_rua,add_uf,add_comp, add_number  }: CreateAddressRequest){
+
+    async execute({ add_bairro, add_cep, add_cidade, add_rua, add_uf, add_comp, add_number }: CreateAddressRequest) {
+
         const addres = new Address({
-            add_bairro, 
+            add_bairro,
             add_cep,
             add_cidade,
             add_rua,

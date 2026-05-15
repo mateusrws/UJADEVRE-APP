@@ -3,6 +3,7 @@ import { addressRepository, putAddressInterface } from "src/modules/Address/repo
 import { PrismaService } from "../prisma.service";
 import { PrismaAddressMapper } from "../mappers/PrismaAddressMapper";
 import { Injectable } from "@nestjs/common";
+import { CreateAddressRequest } from "src/modules/Address/useCases/createAddresUseCase/createAddresUseCase";
 
 @Injectable()
 export class PrismaAddressRepository implements addressRepository {
@@ -25,6 +26,24 @@ export class PrismaAddressRepository implements addressRepository {
         const address = await this.prisma.address.findUnique({ where: { add_id } })
         if (!address) return null;
         return PrismaAddressMapper.toDomainSingle(address)
+    }
+
+    async getByObject(addressReceived: CreateAddressRequest): Promise<Address | null> {
+        const address = await this.prisma.address.findFirst({
+            where: { 
+                add_bairro: addressReceived.add_bairro,
+                add_cidade: addressReceived.add_cidade,
+                add_cep: addressReceived.add_cep,
+                add_comp: addressReceived.add_comp,
+                add_number: addressReceived.add_number,
+                add_rua: addressReceived.add_rua,
+                add_uf: addressReceived.add_uf
+            }
+        })
+
+        if(!address) return null
+
+        return PrismaAddressMapper.toDomainSingle(address) 
     }
 
     async delete(add_id: string): Promise<String> {

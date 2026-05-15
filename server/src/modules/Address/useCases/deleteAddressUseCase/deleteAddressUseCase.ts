@@ -8,7 +8,7 @@ export class deleteAddressByIdUseCase {
 
     async execute(add_id: string) {
 
-        await this.ifAddressExist.validateSomething(add_id)
+        await this.ifAddressExist.somethingValidate(add_id)
         
         return await this.addressRepository.delete(add_id)
     }

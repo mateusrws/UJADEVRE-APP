@@ -1,4 +1,5 @@
 import { Address } from "../entities/Address";
+import { CreateAddressRequest } from "../useCases/createAddresUseCase/createAddresUseCase";
 import { addressRepository, putAddressInterface } from "./addressRepository";
 
 
@@ -17,6 +18,20 @@ export class mockAddressRepository implements addressRepository {
 
     async getById(add_id: string): Promise<Address | null> {
         return this.Address.find(a => a.get_add_id === add_id) ?? null;
+    }
+
+    async getByObject(address: CreateAddressRequest): Promise<Address | null> {
+
+        const addressFound = this.Address.find(a => 
+            a.get_add_bairro === address.add_bairro &&
+            a.get_add_cep === address.add_cep &&
+            a.get_add_cidade === address.add_cidade &&
+            a.get_add_comp === address.add_comp &&
+            a.get_add_number === address.add_number &&
+            a.get_add_rua === address.add_rua &&
+            a.get_add_uf === address.add_uf
+        );
+        return addressFound ?? null
     }
 
     async update(add_id: string, address: putAddressInterface): Promise<Address | String> {

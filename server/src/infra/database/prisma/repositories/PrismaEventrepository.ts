@@ -32,16 +32,16 @@ export class PrismaEventRepository implements eventRepository {
         await this.prisma.event.update({
             where: { eve_id },
             data: {
-                eve_name: event.eve_nome,
-                eve_date: new Date(event.eve_data_and_time),
-                eve_start: new Date(event.eve_data_and_time),
-                eve_desc: event.eve_desc,
-                eve_price: event.eve_price,
-                eve_point: event.eve_point,
-                end_id: event.end_id,
-                eve_max_participants: event.eve_max_participants,
-                eve_participants: event.eve_participants,
-                eve_icon: event.eve_icon,
+                eve_name: event.eve_nome ?? undefined,
+                eve_date: event.eve_data_and_time ? new Date(event.eve_data_and_time) : undefined,
+                eve_start: event.eve_data_and_time ? new Date(event.eve_data_and_time) : undefined,
+                eve_desc: event.eve_desc ?? undefined,
+                eve_price: event.eve_price ?? undefined,
+                eve_point: event.eve_point ?? undefined,
+                end_id: event.end_id ?? undefined,
+                eve_max_participants: event.eve_max_participants ?? undefined,
+                eve_participants: event.eve_participants ?? undefined,
+                eve_icon: event.eve_icon ?? undefined,
             }
         });
         return "Evento alterado com sucesso"

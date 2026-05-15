@@ -31,18 +31,18 @@ export class PrismaUserRepository implements userRepository {
         await this.prisma.user.update({
             where: { user_id },
             data: {
-                user_name: userReceived.user_name,
-                user_email: userReceived.user_email,
-                user_tel: userReceived.user_tel,
-                user_data_nasc: new Date(userReceived.user_data_nasc),
-                user_bio: userReceived.user_desc,
-                user_cpf: userReceived.user_cpf,
-                user_foto_url: userReceived.user_foto_url,
-                con_id: userReceived.con_id,
-                end_id: userReceived.end_id,
+                user_name: userReceived.user_name ?? undefined,
+                user_email: userReceived.user_email ?? undefined,
+                user_tel: userReceived.user_tel ?? undefined,
+                user_bio: userReceived.user_desc ?? undefined,
+                user_cpf: userReceived.user_cpf ?? undefined,
+                user_foto_url: userReceived.user_foto_url ?? undefined,
+                con_id: userReceived.con_id ?? undefined,
+                end_id: userReceived.end_id ?? undefined,
+                user_point: userReceived.user_point ?? undefined,
             }
         });
-        return "Usuário alterado com sucesso"
+        return "Usuário alterado com sucesso";
     }
     async delete(user_id: string): Promise<String> {
         await this.prisma.user.delete({ where: { user_id } })

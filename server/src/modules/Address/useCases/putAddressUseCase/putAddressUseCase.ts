@@ -6,10 +6,10 @@ import { ifAddressExist } from "src/utils/ifAddressExist"
 export class putAddressUseCase {
     constructor(private addressRepository: addressRepository, private ifAddressExist: ifAddressExist) { }
 
-    async execute(add_id: string,addressReceived: putAddressInterface) {
+    async execute(add_id: string, addressReceived: putAddressInterface) {
+        // Validate that address exists before updating
+        await this.ifAddressExist.somethingValidate(add_id)
 
-        await this.ifAddressExist.validateSomething(add_id)
-        
-        return await this.addressRepository.update(add_id,addressReceived)
+        return await this.addressRepository.update(add_id, addressReceived)
     }
 }
