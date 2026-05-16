@@ -4,6 +4,7 @@ import Swal from 'sweetalert2'
 import { useAuth } from '../contexts/AuthContext'
 import { userService } from '../services/userService'
 import { addressService, type Address } from '../services/addressService'
+import { archiveService } from '../services/archiveService'
 
 export function Profile() {
     const { currentUser, logout, refreshUser } = useAuth()
@@ -104,12 +105,14 @@ export function Profile() {
         setIsEditingUser(false)
     }
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
             const reader = new FileReader()
             reader.onloadend = () => setPreviewImage(reader.result as string)
             reader.readAsDataURL(file)
+            const picUploaded = await archiveService.upload({file})
+            console.log(picUploaded)
         }
     }
 

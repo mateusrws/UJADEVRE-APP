@@ -1,8 +1,10 @@
-import { ScanLine, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import { ScanLine, CheckCircle, XCircle, AlertCircle, Upload } from 'lucide-react'
 import { useState } from 'react'
 import { registrationService, type RegistrationRaw } from '../services/registrationService'
 import { eventService, type Event } from '../services/eventService'
 import { userService, type User } from '../services/userService'
+import { archiveService } from '../services/archiveService'
+import Swal from 'sweetalert2'
 
 type ScanResultType = {
     type: 'success' | 'error' | 'warning'
@@ -10,12 +12,16 @@ type ScanResultType = {
     registration?: RegistrationRaw
     event?: Event
     user?: User
+    reg_term_url?: string
+    needsTermUpload?: boolean
 }
 
 export function CheckIn() {
     const [ticketId, setTicketId] = useState('')
     const [scanResult, setScanResult] = useState<ScanResultType | null>(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [isUploading, setIsUploading] = useState(false)
 
     const handleScan = async () => {
         const input = ticketId.trim().toUpperCase()
@@ -27,6 +33,7 @@ export function CheckIn() {
 
         setIsLoading(true)
         setScanResult(null)
+        setSelectedFile(null)
 
         try {
             const all = await registrationService.getAll()
@@ -48,10 +55,6 @@ export function CheckIn() {
                 userService.getById(found.user_id).catch(() => null),
             ])
 
-            // reg_is_valid starts as false (not yet validated).
-            // toggleIsValid validates it only when remain_value === 0 AND reg_is_valid === false.
-            // After validation, reg_is_valid becomes true = "checked in".
-
             if (found.reg_is_valid === true) {
                 // Already checked in
                 setScanResult({
@@ -60,6 +63,7 @@ export function CheckIn() {
                     registration: found,
                     event: eventData ?? undefined,
                     user: userData ?? undefined,
+                    reg_term_url: found.reg_term_url,
                 })
                 return
             }
@@ -80,24 +84,123 @@ export function CheckIn() {
 
             setScanResult({
                 type: 'success',
-                message: `${checkInResult.message} (+${checkInResult.pointsAdded} pontos)`,
+                message: `${checkInResult.message} (+${checkInResult.points_added} pontos)`,
                 registration: { ...found, reg_is_valid: true },
                 event: eventData ?? undefined,
                 user: userData ?? undefined,
+                reg_term_url: checkInResult.reg_term_url,
             })
 
             setTimeout(() => {
                 setTicketId('')
                 setScanResult(null)
-            }, 5000)
+            }, 10000)
         } catch (err: any) {
             const msg =
                 err?.response?.data?.message ||
                 err?.message ||
                 'Erro ao verificar ingresso'
-            setScanResult({ type: 'error', message: msg })
+
+            // Check if error is about missing term
+            const needsTermUpload = msg.includes('termo não foi assinado') || msg.includes('termo não foi salvo')
+
+            // Fetch registration data for term upload
+            let registration: RegistrationRaw | undefined
+            let eventData: Event | undefined
+            let userData: User | undefined
+
+            if (needsTermUpload) {
+                try {
+                    const all = await registrationService.getAll()
+                    const found = all.find((r) => {
+                        const code = `UJAD-${r.reg_id.slice(0, 6).toUpperCase()}`
+                        return code === ticketId.trim().toUpperCase() || r.reg_id.toUpperCase() === ticketId.trim().toUpperCase()
+                    })
+
+                    if (found) {
+                        registration = found
+                        const [evt, usr] = await Promise.all([
+                            eventService.getById(found.eve_id).catch(() => null),
+                            userService.getById(found.user_id).catch(() => null),
+                        ])
+                        eventData = evt ?? undefined
+                        userData = usr ?? undefined
+                    }
+                } catch {
+                    // Ignore errors fetching data
+                }
+            }
+
+            setScanResult({
+                type: 'error',
+                message: msg,
+                needsTermUpload,
+                registration,
+                event: eventData,
+                user: userData,
+            })
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        // Validate file type
+        const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png']
+        if (!validTypes.includes(file.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Formato inválido',
+                text: 'Por favor, envie um arquivo PDF ou imagem (JPG, PNG)',
+            })
+            return
+        }
+
+        // Validate file size (max 10MB)
+        const maxSize = 10 * 1024 * 1024
+        if (file.size > maxSize) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Arquivo muito grande',
+                text: 'O arquivo deve ter no máximo 10MB',
+            })
+            return
+        }
+
+        setSelectedFile(file)
+    }
+
+    const handleUploadTerm = async () => {
+        if (!selectedFile || !scanResult?.registration) return
+
+        setIsUploading(true)
+
+        try {
+            await archiveService.uploadTerm(scanResult.registration.reg_id, { file: selectedFile })
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'Termo enviado!',
+                text: 'O termo foi enviado com sucesso. Realizando check-in...',
+                timer: 2000,
+                showConfirmButton: false,
+            })
+
+            // Retry check-in after successful upload
+            setSelectedFile(null)
+            await handleScan()
+        } catch (err: any) {
+            const msg = err?.response?.data?.message || err?.message || 'Erro ao enviar termo'
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro no upload',
+                text: msg,
+            })
+        } finally {
+            setIsUploading(false)
         }
     }
 
@@ -214,6 +317,81 @@ export function CheckIn() {
                             )}
                         </div>
                     )}
+
+                    {/* File upload for missing term */}
+                    {scanResult.needsTermUpload && scanResult.registration && (
+                        <div className="mt-4 bg-white rounded-xl p-4 border-2 border-red-300">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Upload size={20} className="text-red-600" />
+                                <h4 className="font-semibold text-red-800">Enviar Termo Assinado</h4>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Por favor, faça upload do termo de responsabilidade assinado para continuar com o check-in.
+                            </p>
+                            <div className="space-y-3">
+                                <input
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={handleFileChange}
+                                    className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800 file:cursor-pointer"
+                                />
+                                {selectedFile && (
+                                    <div className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                                        <span className="text-sm text-gray-700">{selectedFile.name}</span>
+                                        <button
+                                            onClick={handleUploadTerm}
+                                            disabled={isUploading}
+                                            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-all text-sm flex items-center gap-2 disabled:opacity-60"
+                                        >
+                                            {isUploading ? (
+                                                <>
+                                                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                    Enviando...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Upload size={16} />
+                                                    Enviar
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2">
+                                Formatos aceitos: PDF, JPG, PNG (máx. 10MB)
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Show term iframe on success or warning (already checked in) */}
+                    {(scanResult.type === 'success' || scanResult.type === 'warning') && scanResult.reg_term_url && (
+                        <div className="mt-4 bg-white rounded-xl p-4 border-2 border-green-300">
+                            <h4 className="font-semibold text-green-800 mb-3">Termo de Responsabilidade</h4>
+                            <div className="w-full h-96 border-2 border-gray-300 rounded-lg overflow-hidden">
+                                <iframe
+                                    src={scanResult.reg_term_url}
+                                    className="w-full h-full"
+                                    title="Termo de Responsabilidade"
+                                    onError={() => {
+                                        Swal.fire({
+                                            icon: 'warning',
+                                            title: 'Erro ao carregar termo',
+                                            text: 'Não foi possível exibir o termo. Verifique o link.',
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <a
+                                href={scanResult.reg_term_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-blue-600 hover:underline mt-2 inline-block"
+                            >
+                                Abrir termo em nova aba →
+                            </a>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -222,6 +400,7 @@ export function CheckIn() {
                 <ul className="space-y-2 text-sm text-gray-600">
                     <li>• Digite o código no formato UJAD-XXXXXX</li>
                     <li>• O ingresso deve estar com pagamento quitado para fazer check-in</li>
+                    <li>• O termo de responsabilidade deve estar assinado e enviado</li>
                     <li>• Cada ingresso pode fazer check-in apenas uma vez</li>
                     <li>• O sistema verifica automaticamente a validade e o pagamento</li>
                 </ul>

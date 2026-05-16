@@ -71,9 +71,13 @@ export const registrationService = {
         await api.patch(`/registration/term/${reg_id}`)
     },
 
-    async checkIn(reg_id: string): Promise<{ message: string; pointsAdded: number }> {
-        const { data } = await api.post<{ message: string; pointsAdded: number }>(`/registration/checkin/${reg_id}`)
-        return data
+    async checkIn(reg_id: string): Promise<{ message: string; points_added: number; reg_term_url: string }> {
+        const { data } = await api.post<{ message: string; points_added: number; reg_term_url: string }>(`/registration/checkin/${reg_id}`)
+        return {
+            message: data.message,
+            pointsAdded: data.points_added,
+            reg_term_url: data.reg_term_url
+        }
     },
 
     // Fetch registrations for a specific user by filtering all registrations

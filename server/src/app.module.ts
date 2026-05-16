@@ -9,8 +9,9 @@ import { RegistrationModule } from './infra/http/module/registration/registratio
 import { AuthModule } from './infra/http/module/auth/auth.module';
 import { JwtAuthGuard } from './infra/http/module/auth/guards/JwtAuth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ArchiveModule } from './infra/http/module/arcrhive/archive.module';
 @Module({
-  imports: [DataBaseModule, AdressModule, CongregationModule, UserModule, NewsModule, EventModule, RegistrationModule, AuthModule],
+  imports: [DataBaseModule, AdressModule, CongregationModule, UserModule, NewsModule, EventModule, RegistrationModule, AuthModule, ArchiveModule],
   controllers: [],
   providers: [
     {
