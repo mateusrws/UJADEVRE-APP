@@ -131,7 +131,7 @@ export class archiveUploadUseCase {
         }
 
         console.log('✅ Upload bem-sucedido:', data);
-
+ 
         const { data: publicUrlData } = this.supabase.storage
             .from("Termos")
             .getPublicUrl(fileName);
