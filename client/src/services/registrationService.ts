@@ -75,7 +75,7 @@ export const registrationService = {
         const { data } = await api.post<{ message: string; points_added: number; reg_term_url: string }>(`/registration/checkin/${reg_id}`)
         return {
             message: data.message,
-            pointsAdded: data.points_added,
+            points_added: data.points_added,
             reg_term_url: data.reg_term_url
         }
     },
