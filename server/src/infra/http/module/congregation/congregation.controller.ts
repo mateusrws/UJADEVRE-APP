@@ -4,7 +4,7 @@ import { CreateCongregationBody } from "./dtos/createCongregationBody";
 import { getCongregationUseCase } from "src/modules/Congregation/useCases/getCongregation/getCongregationUseCase";
 import { putCongregationUseCase } from "src/modules/Congregation/useCases/putCongregation/putCongregationUseCase";
 import { deleteCongregationByIdUseCase } from "src/modules/Congregation/useCases/deleteCongregation/deleteCongregationUseCase";
-import { putCongregationInterface } from "src/modules/Congregation/repositories/congregationRepository";
+import { type putCongregationInterface } from "src/modules/Congregation/repositories/congregationRepository";
 
 @Controller('congregation')
 export class CongregationController {

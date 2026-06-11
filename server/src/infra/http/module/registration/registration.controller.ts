@@ -3,9 +3,9 @@ import { createRegistrationUseCase } from "src/modules/Registration/useCases/cre
 import { getRegistrationsUseCase } from "src/modules/Registration/useCases/getRegistrationUseCase/getRegistrationUseCase";
 import { putRegistrationUseCase } from "src/modules/Registration/useCases/putRegistrationUseCase/putRegistrationUseCase";
 import { createRegistrationBody } from "./dtos/createRegistrationBody";
-import { putRegistrationInterface } from "src/modules/Registration/repositories/registrationRepository";
+import { type putRegistrationInterface } from "src/modules/Registration/repositories/registrationRepository";
 import { deleteRegistrationByIdUseCase } from "src/modules/Registration/useCases/deleteRegistrationUseCase/deleteRegistrationUseCase";
-import { paymentBody } from "./dtos/paymentBody";
+import { type paymentBody } from "./dtos/paymentBody";
 import { paymentRegistrationUseCase } from "src/modules/Registration/useCases/paymentRegistration/paymentRegistrationUseCase";
 import { toggleIsValdUseCase } from "src/modules/Registration/useCases/toggleIsValidUseCase/toggleIsValidUseCase";
 import { Registration } from "src/modules/Registration/entities/Registration";
@@ -43,7 +43,7 @@ export class RegistrationController {
     }
 
     @Get('/:reg_id')
-    async getCongregationById(@Param('reg_id') reg_id: string) {
+    async getRegistrationById(@Param('reg_id') reg_id: string) {
         const registration = await this.getRegistrationUseCase.executeById(reg_id)
 
         if (!registration) return null
@@ -74,7 +74,7 @@ export class RegistrationController {
     }
 
     @Put("/:reg_id")
-    async putCongregation(@Param("reg_id") reg_id, @Body() body: putRegistrationInterface) {
+    async putRegistration(@Param("reg_id") reg_id, @Body() body: putRegistrationInterface) {
         const result = await this.putRegistrationUseCase.execute(reg_id, body)
 
         if (typeof result === 'string') {
@@ -94,7 +94,7 @@ export class RegistrationController {
     }
 
     @Delete("/:reg_id")
-    async deleteCongregation(@Param("reg_id") reg_id) {
+    async deleteRegistration(@Param("reg_id") reg_id) {
         return await this.deleteRegistrationUseCase.execute(reg_id)
     }
 

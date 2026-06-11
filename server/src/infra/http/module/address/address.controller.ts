@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { CreateAddressRequest, createAddressUseCase } from "src/modules/Address/useCases/createAddresUseCase/createAddresUseCase";
+import { type CreateAddressRequest, createAddressUseCase } from "src/modules/Address/useCases/createAddresUseCase/createAddresUseCase";
 import { CreateAddressBody } from "./dtos/createAddressBody";
 import { getAddressUseCase } from "src/modules/Address/useCases/getAddressUseCase/getAddressUseCase";
-import { putAddressInterface } from "src/modules/Address/repositories/addressRepository";
+import type { putAddressInterface } from "src/modules/Address/repositories/addressRepository";
 import { putAddressUseCase } from "src/modules/Address/useCases/putAddressUseCase/putAddressUseCase";
 import { deleteAddressByIdUseCase } from "src/modules/Address/useCases/deleteAddressUseCase/deleteAddressUseCase";
 import { getAddressByIdUseCase } from "src/modules/Address/useCases/getAddressByIdUseCase/getAddressByIdUseCase";

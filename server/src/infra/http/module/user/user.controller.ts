@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Request } from "@nestj
 import { createUserUseCase } from "../../../../modules/User/useCases/CreateUserUseCase/createUserUseCase";
 import { CreateUserBody } from "./dtos/createUserBody";
 import { getUserUseCase } from "src/modules/User/useCases/GetUserUseCase/getUserUseCase";
-import { putUserInterface } from "src/modules/User/repositories/userRepository";
+import { type putUserInterface } from "src/modules/User/repositories/userRepository";
 import { putUserUseCase } from "src/modules/User/useCases/PutUserUseCase/putUserUseCase";
 import { deleteUserByIdUseCase } from "src/modules/User/useCases/deleteUserUseCase/deleteUserUseCase";
 

@@ -9,8 +9,6 @@ COPY package*.json ./
 
 COPY prisma ./prisma/
 
-COPY .env.production .env
-
 
 RUN npm install --quiet --no-fund --loglevel=error
 

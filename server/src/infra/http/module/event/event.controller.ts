@@ -2,7 +2,7 @@ import { Body, Controller, Param, Post, Get, Put, Delete } from "@nestjs/common"
 import { getEventUseCase } from "src/modules/Event/useCases/GetEventUseCase/getEventUseCase";
 import { createEventUseCase } from "src/modules/Event/useCases/CreateEventUseCase/createEventUseCase";
 import { CreateEventBody } from "./dtos/createEventBody";
-import { putEventInterface } from "src/modules/Event/repositories/eventRepository";
+import { type putEventInterface } from "src/modules/Event/repositories/eventRepository";
 import { putEventUseCase } from "src/modules/Event/useCases/putEventUseCase/putEventUseCase";
 import { deleteEventByIdUseCase } from "src/modules/Event/useCases/deleteEventUseCase/deleteEventUseCase";
 
