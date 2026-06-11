@@ -10,9 +10,9 @@ import { AuthModule } from './infra/http/module/auth/auth.module';
 import { JwtAuthGuard } from './infra/http/module/auth/guards/JwtAuth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ArchiveModule } from './infra/http/module/arcrhive/archive.module';
-import { WebHookModule } from './infra/http/module/webhooks/webhook';
+import { AbacatePayModule } from './infra/http/module/payments/abacatepay/abacatepay.module';
 @Module({
-  imports: [DataBaseModule, AdressModule, CongregationModule, UserModule, NewsModule, EventModule, RegistrationModule, AuthModule, ArchiveModule, WebHookModule],
+  imports: [DataBaseModule, AdressModule, CongregationModule, UserModule, NewsModule, EventModule, RegistrationModule, AuthModule, ArchiveModule, AbacatePayModule],
   controllers: [],
   providers: [
     {

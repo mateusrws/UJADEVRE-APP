@@ -1,16 +1,18 @@
 import api from './api'
 
 export interface Address {
-    add_id: string
-    add_bairro: string
-    add_cidade: string
-    add_uf: string
-    add_cep: string
-    add_number: string
-    add_rua: string
-    add_comp?: string
-    add_createdAt: string
-    add_updatedAt: string
+    _add_id: string
+    props: {
+        add_bairro: string
+        add_cidade: string
+        add_uf: string
+        add_cep: string
+        add_number: string
+        add_rua: string
+        add_comp?: string
+        add_createdAt: string
+        add_updatedAt: string
+    }
 }
 
 export interface CreateAddressPayload {
@@ -45,8 +47,7 @@ export const addressService = {
     },
 
     async getByObject(body: getByObjectPayload) {
-        const { data } = await api.post<Address>(`/address/`, body)
-        console.log(data)
+        const { data } = await api.post<Address>(`/address/search`, body)
         return data
     },
 

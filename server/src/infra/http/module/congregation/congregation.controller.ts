@@ -19,17 +19,17 @@ export class CongregationController {
         return user
     }
 
+    @Get()
+    async getCongregations() {
+        const congregations = await this.getCongregationUseCase.execute()
+        return congregations
+    }
+
     @Get('/:con_id')
     async getCongregationById(@Param('con_id') con_id: string) {
         const congregation = await this.getCongregationUseCase.executeById(con_id)
 
         return congregation
-    }
-
-    @Get()
-    async getCongregations() {
-        const congregations = await this.getCongregationUseCase.execute()
-        return congregations
     }
 
     @Put("/:con_id")

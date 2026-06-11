@@ -2,11 +2,14 @@ import { Users, UserPlus, Trash2, Shield, User as UserIcon, X } from 'lucide-rea
 import { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
 import { userService, type User } from '../services/userService'
-import { congregationService } from '../services/congregationService'
+import { congregationService, type Congregation } from '../services/congregationService'
 import { addressService } from '../services/addressService'
 
 export function AdminPanel() {
+    console.log('🎯 AdminPanel component mounted')
+
     const [users, setUsers] = useState<User[]>([])
+    const [congregations, setCongregations] = useState<Congregation[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
@@ -19,6 +22,7 @@ export function AdminPanel() {
     const [newUserCpf, setNewUserCpf] = useState('')
     const [newUserBirthDate, setNewUserBirthDate] = useState('')
     const [newUserDesc, setNewUserDesc] = useState('')
+    const [selectedCongregation, setSelectedCongregation] = useState('')
 
     // Address form state
     const [newUserStreet, setNewUserStreet] = useState('')
@@ -45,8 +49,40 @@ export function AdminPanel() {
         }
     }
 
+    const fetchCongregations = async () => {
+        try {
+            console.log('🔄 Fetching congregations from API...')
+            const data = await congregationService.getAll()
+            console.log('✅ Congregations received:', data)
+            setCongregations(data)
+            // Set first congregation as default if none selected
+            if (data.length > 0) {
+                console.log('✅ Setting first congregation as default:', data[0]._con_id)
+                setSelectedCongregation(data[0]._con_id)
+            } else {
+                console.warn('⚠️ No congregations found - API returned empty array')
+            }
+        } catch (error: any) {
+            console.error('❌ Error fetching congregations:', error)
+            console.error('❌ Error details:', {
+                message: error?.message,
+                response: error?.response?.data,
+                status: error?.response?.status,
+                url: error?.config?.url,
+            })
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro ao carregar congregações',
+                text: error?.response?.data?.message || 'Não foi possível carregar as congregações',
+                confirmButtonColor: '#000',
+            })
+        }
+    }
+
     useEffect(() => {
+        console.log('🔄 useEffect running - fetching users and congregations')
         fetchUsers()
+        fetchCongregations()
     }, [])
 
     const resetForm = () => {
@@ -64,6 +100,10 @@ export function AdminPanel() {
         setNewUserCity('')
         setNewUserState('')
         setNewUserZipCode('')
+        // Reset to first congregation
+        if (congregations.length > 0) {
+            setSelectedCongregation(congregations[0]._con_id)
+        }
     }
 
     const handleCreateUser = async () => {
@@ -74,6 +114,7 @@ export function AdminPanel() {
             !newUserPhone.trim() ||
             !newUserCpf.trim() ||
             !newUserBirthDate ||
+            !selectedCongregation ||
             !newUserStreet.trim() ||
             !newUserNumber.trim() ||
             !newUserNeighborhood.trim() ||
@@ -102,30 +143,37 @@ export function AdminPanel() {
 
         setIsSaving(true)
         try {
-            // Step 1: Create address for the user
-            const address = await addressService.create({
-                add_rua: newUserStreet,
+            // Step 1: Create address for the user if not exist
+            const address = await addressService.getByObject({
                 add_bairro: newUserNeighborhood,
                 add_cidade: newUserCity,
                 add_uf: newUserState,
                 add_cep: newUserZipCode,
+                add_rua: newUserStreet,
                 add_number: newUserNumber,
                 add_comp: newUserComplement || undefined,
             })
-
-            // Step 2: Resolve or create congregation
-            const congregations = await congregationService.getAll()
-            let con_id = congregations[0]?.con_id
-
-            if (!con_id) {
-                const cong = await congregationService.create({
-                    con_name: 'Congregação Principal',
-                    end_id: address.add_id,
+            console.log('🔍 Address search result:', address)
+            if(!address) {
+                console.log('📍 Creating address...')
+                const address = await addressService.create({
+                    add_rua: newUserStreet,
+                    add_bairro: newUserNeighborhood,
+                    add_cidade: newUserCity,
+                    add_uf: newUserState,
+                    add_cep: newUserZipCode,
+                    add_number: newUserNumber,
+                    add_comp: newUserComplement || undefined,
                 })
-                con_id = cong.con_id
+                console.log('✅ Address created:', address._add_id)
             }
 
-            // Step 3: Create user with address ID
+            // Step 2: Use selected congregation
+            console.log('✅ Using selected congregation:', selectedCongregation)
+
+            // Step 3: Create user with address ID and selected congregation
+            console.log('👤 Creating user with end_id:', address._add_id, 'and con_id:', selectedCongregation)
+
             await userService.create({
                 user_name: newUserName,
                 user_email: newUserEmail,
@@ -136,10 +184,11 @@ export function AdminPanel() {
                 // user_desc and user_foto_url are @IsNotEmpty() — must not be empty
                 user_desc: newUserDesc.trim() || 'Membro da comunidade',
                 user_foto_url: 'https://ujadevre.com/avatar-default.png',
-                user_tipo: 'user',
-                con_id,
-                end_id: address.add_id,
+                user_tipo: 'ADOLESCENTE',
+                con_id: selectedCongregation,
+                end_id: address._add_id,
             })
+            console.log('✅ User created successfully')
 
             await fetchUsers() // Refresh list from server
             setIsModalOpen(false)
@@ -161,10 +210,11 @@ export function AdminPanel() {
                 'Não foi possível criar o usuário'
 
             // Check if error occurred during address creation
-            const isAddressError = msg.toLowerCase().includes('endereço') ||
-                msg.toLowerCase().includes('address') ||
-                msg.toLowerCase().includes('cep') ||
-                msg.toLowerCase().includes('rua')
+            const msgStr = String(msg || '')
+            const isAddressError = msgStr.toLowerCase().includes('endereço') ||
+                msgStr.toLowerCase().includes('address') ||
+                msgStr.toLowerCase().includes('cep') ||
+                msgStr.toLowerCase().includes('rua')
 
             Swal.fire({
                 icon: 'error',
@@ -293,7 +343,6 @@ export function AdminPanel() {
                             </button>
                         </div>
 
-                        {/* Content - Scrollable */}
                         <div className="flex-1 overflow-y-auto p-6">
                             <div className="flex flex-col gap-4">
                                 <div>
@@ -316,6 +365,40 @@ export function AdminPanel() {
                                         placeholder="Ex: maria@email.com"
                                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
                                     />
+                                </div>
+
+                                <div>
+                                    <label className="text-sm text-gray-600 mb-2 block">Congregação *</label>
+                                    <select
+                                        value={selectedCongregation}
+                                        onChange={(e) => {
+                                            console.log('📝 Congregation selected:', e.target.value)
+                                            setSelectedCongregation(e.target.value)
+                                        }}
+                                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black bg-white text-black"
+                                    >
+                                        <option value="">Selecione uma congregação</option>
+                                        {congregations.length === 0 ? (
+                                            <option disabled>Carregando congregações...</option>
+                                        ) : (
+                                            congregations.map((cong) => {
+                                                console.log('🏛️ Rendering congregation option:', cong.props.con_name, cong._con_id)
+                                                return (
+                                                    <option key={cong._con_id} value={cong._con_id}>
+                                                        {cong.props.con_name}
+                                                    </option>
+                                                )
+                                            })
+                                        )}
+                                    </select>
+                                    {congregations.length === 0 && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Nenhuma congregação encontrada. Crie uma congregação primeiro.
+                                        </p>
+                                    )}
+                                    <p className="text-xs text-gray-400 mt-1">
+                                        Total de congregações: {congregations.length}
+                                    </p>
                                 </div>
 
                                 <div>

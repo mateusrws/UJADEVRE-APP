@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { putUserUseCase } from "../User/useCases/PutUserUseCase/putUserUseCase";
 import { putRegistrationUseCase } from "../Registration/useCases/putRegistrationUseCase/putRegistrationUseCase";
 
-function getUserId(token: string){
+export function getUserId(token: string){
     // Remove "Bearer " do token
     const tokenLimpo = token.replace(/^Bearer\s+/i, '').trim();
 

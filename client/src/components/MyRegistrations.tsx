@@ -39,6 +39,7 @@ export function MyRegistrations() {
     const [paymentAmount, setPaymentAmount] = useState('')
     const [ticketToView, setTicketToView] = useState<RegistrationView | null>(null)
     const [isPaying, setIsPaying] = useState(false)
+    const [paymentData, setPaymentData] = useState<{ qrCodeBase64: string | null; brCode: string | null } | null>(null)
 
     const fetchData = async () => {
         if (!currentUser) return
@@ -91,6 +92,7 @@ export function MyRegistrations() {
     const handleCloseModal = () => {
         setSelectedReg(null)
         setPaymentAmount('')
+        setPaymentData(null)
     }
 
     const handlePayment = async () => {
@@ -111,26 +113,52 @@ export function MyRegistrations() {
 
         setIsPaying(true)
         try {
-            await registrationService.payment(selectedReg.reg_id, amount)
-            // Update local state — subtract the paid amount from remaining
-            setRegistrations((prev) =>
-                prev.map((r) =>
-                    r.reg_id === selectedReg.reg_id
-                        ? { ...r, reg_remain_value: Math.max(0, r.reg_remain_value - amount) }
-                        : r
-                )
-            )
-            handleCloseModal()
-            Swal.fire({ icon: 'success', title: 'Pagamento registrado!', timer: 1500, showConfirmButton: false })
+            console.log('💰 Gerando pagamento PIX para:', amount)
+            const responseCreateBill = await registrationService.payment(selectedReg.reg_id, amount)
+            console.log('✅ Pagamento criado:', responseCreateBill)
+
+            // Armazena dados do pagamento (QR Code e código PIX)
+            if (responseCreateBill) {
+                console.log("qrcode: ", responseCreateBill.data.qrCodeBase64, "\n brCode: ", responseCreateBill.data.brCode)
+                setPaymentData({
+                    qrCodeBase64: responseCreateBill.data.brCodeBase64 || null,
+                    brCode: responseCreateBill.data.brCode || null,
+                })
+            }
         } catch (err: any) {
+            console.error('❌ Erro ao processar pagamento:', err)
             Swal.fire({
                 icon: 'error',
-                title: 'Erro',
+                title: 'Erro ao processar pagamento',
                 text: err?.response?.data?.message || 'Não foi possível registrar o pagamento',
                 confirmButtonColor: '#000',
             })
         } finally {
             setIsPaying(false)
+        }
+    }
+
+    const handleCopyPixCode = async () => {
+        if (!paymentData?.brCode) return
+
+        try {
+            await navigator.clipboard.writeText(paymentData.brCode)
+            Swal.fire({
+                icon: 'success',
+                title: 'Código PIX copiado!',
+                text: 'Cole o código no seu aplicativo bancário',
+                timer: 2000,
+                showConfirmButton: false,
+                confirmButtonColor: '#000',
+            })
+        } catch (err) {
+            console.error('❌ Erro ao copiar código:', err)
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Não foi possível copiar o código PIX',
+                confirmButtonColor: '#000',
+            })
         }
     }
 
@@ -235,15 +263,23 @@ export function MyRegistrations() {
             {/* Payment Modal */}
             {selectedReg && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+                    <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center gap-3">
                                 <div className="bg-black p-2 rounded-xl">
                                     <CreditCard className="text-white" size={20} />
                                 </div>
-                                <h2 className="text-xl font-semibold">Pagamento</h2>
+                                <h2 className="text-xl font-semibold">
+                                    {paymentData ? 'PIX Gerado' : 'Pagamento'}
+                                </h2>
                             </div>
-                            <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-xl transition-all">
+                            <button
+                                onClick={() => {
+                                    handleCloseModal()
+                                    setPaymentData(null)
+                                }}
+                                className="p-2 hover:bg-gray-100 rounded-xl transition-all"
+                            >
                                 <X size={24} />
                             </button>
                         </div>
@@ -256,55 +292,122 @@ export function MyRegistrations() {
                                     : '—'}
                             </div>
 
-                            <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-sm text-gray-600">Valor total:</span>
-                                    <span className="font-semibold">R$ {(selectedReg.event?.eve_price ?? 0).toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-sm text-gray-600">Já pago:</span>
-                                    <span className="font-semibold text-green-600">
-                                        R$ {((selectedReg.event?.eve_price ?? 0) - selectedReg.reg_remain_value).toFixed(2)}
-                                    </span>
-                                </div>
-                                <div className="h-px bg-gray-300 my-2" />
-                                <div className="flex justify-between">
-                                    <span className="text-sm text-gray-600">Falta pagar:</span>
-                                    <span className="font-bold text-lg">R$ {selectedReg.reg_remain_value.toFixed(2)}</span>
-                                </div>
-                            </div>
+                            {!paymentData ? (
+                                // ============ TELA 1: ANTES DO PAGAMENTO ============
+                                <>
+                                    <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                                        <div className="flex justify-between mb-2">
+                                            <span className="text-sm text-gray-600">Valor total:</span>
+                                            <span className="font-semibold">R$ {(selectedReg.event?.eve_price ?? 0).toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex justify-between mb-2">
+                                            <span className="text-sm text-gray-600">Já pago:</span>
+                                            <span className="font-semibold text-green-600">
+                                                R$ {((selectedReg.event?.eve_price ?? 0) - selectedReg.reg_remain_value).toFixed(2)}
+                                            </span>
+                                        </div>
+                                        <div className="h-px bg-gray-300 my-2" />
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-gray-600">Falta pagar:</span>
+                                            <span className="font-bold text-lg">R$ {selectedReg.reg_remain_value.toFixed(2)}</span>
+                                        </div>
+                                    </div>
 
-                            <label className="text-sm text-gray-600 mb-2 block">Quanto deseja pagar?</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                min="0.01"
-                                max={selectedReg.reg_remain_value}
-                                value={paymentAmount}
-                                onChange={(e) => setPaymentAmount(e.target.value)}
-                                placeholder="0,00"
-                                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-black"
-                            />
-                        </div>
+                                    <label className="text-sm text-gray-600 mb-2 block">Quanto deseja pagar?</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0.01"
+                                        max={selectedReg.reg_remain_value}
+                                        value={paymentAmount}
+                                        onChange={(e) => setPaymentAmount(e.target.value)}
+                                        placeholder="0,00"
+                                        className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-black mb-4"
+                                    />
 
-                        <div className="flex gap-3">
-                            <button
-                                onClick={handleCloseModal}
-                                className="flex-1 bg-white text-black border-2 border-black py-3 px-4 rounded-xl font-medium hover:bg-gray-50 transition-all"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handlePayment}
-                                disabled={isPaying}
-                                className="flex-1 bg-black text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-800 transition-all shadow-sm disabled:opacity-60"
-                            >
-                                {isPaying ? (
-                                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto block" />
-                                ) : (
-                                    'Confirmar'
-                                )}
-                            </button>
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => {
+                                                handleCloseModal()
+                                                setPaymentData(null)
+                                            }}
+                                            className="flex-1 bg-white text-black border-2 border-black py-3 px-4 rounded-xl font-medium hover:bg-gray-50 transition-all"
+                                        >
+                                            Cancelar
+                                        </button>
+                                        <button
+                                            onClick={handlePayment}
+                                            disabled={isPaying || !paymentAmount}
+                                            className="flex-1 bg-black text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-800 transition-all shadow-sm disabled:opacity-60"
+                                        >
+                                            {isPaying ? (
+                                                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto block" />
+                                            ) : (
+                                                'Gerar PIX'
+                                            )}
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                // ============ TELA 2: DEPOIS DO PAGAMENTO ============
+                                <>
+                                    {/* QR Code */}
+                                    <div className="bg-white rounded-xl p-4 mb-4 flex flex-col items-center border-2 border-gray-200">
+                                        {paymentData.qrCodeBase64 ? (
+                                            <>
+                                                <img
+                                                    src={`${paymentData.qrCodeBase64}`}
+                                                    alt="PIX QR Code"
+                                                    className="max-w-xs w-full h-auto rounded-lg"
+                                                />
+                                                <p className="text-xs text-gray-500 mt-3">Escaneie com seu celular</p>
+                                            </>
+                                        ) : (
+                                            <div className="text-center py-6">
+                                                <p className="text-gray-600">QR Code não disponível</p>
+                                                <p className="text-sm text-gray-500 mt-1">Use o código PIX abaixo</p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Código PIX */}
+                                    {paymentData.brCode && (
+                                        <>
+                                            <label className="text-sm text-gray-600 mb-2 block">Código PIX (Copia e Cola)</label>
+                                            <div className="bg-gray-50 rounded-xl p-3 mb-3 flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={paymentData.brCode}
+                                                    readOnly
+                                                    className="flex-1 bg-transparent font-mono text-xs text-gray-700 focus:outline-none overflow-hidden text-ellipsis"
+                                                />
+                                                <button
+                                                    onClick={handleCopyPixCode}
+                                                    className="px-3 py-2 bg-black text-white text-xs font-medium rounded-lg hover:bg-gray-800 transition-all shrink-0"
+                                                >
+                                                    Copiar
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4">
+                                        <p className="text-sm text-blue-900">
+                                            ✓ PIX gerado com sucesso! Abra seu app bancário e cole o código para pagar.
+                                        </p>
+                                    </div>
+
+                                    <button
+                                        onClick={() => {
+                                            handleCloseModal()
+                                            setPaymentData(null)
+                                        }}
+                                        className="w-full bg-black text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-800 transition-all"
+                                    >
+                                        Fechar
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -340,53 +443,11 @@ export function MyRegistrations() {
                                     </div>
                                 </div>
 
-                                {/* Static QR Code SVG */}
-                                <div className="bg-white rounded-xl p-6 mb-4 flex items-center justify-center">
-                                    <div className="relative w-48 h-48">
-                                        <svg viewBox="0 0 100 100" className="w-full h-full">
-                                            <rect x="0" y="0" width="100" height="100" fill="white" />
-                                            <rect x="5" y="5" width="10" height="10" fill="black" />
-                                            <rect x="20" y="5" width="5" height="5" fill="black" />
-                                            <rect x="30" y="5" width="5" height="5" fill="black" />
-                                            <rect x="40" y="5" width="10" height="10" fill="black" />
-                                            <rect x="70" y="5" width="5" height="5" fill="black" />
-                                            <rect x="85" y="5" width="10" height="10" fill="black" />
-                                            <rect x="5" y="20" width="5" height="5" fill="black" />
-                                            <rect x="25" y="20" width="5" height="5" fill="black" />
-                                            <rect x="35" y="20" width="10" height="10" fill="black" />
-                                            <rect x="60" y="20" width="5" height="5" fill="black" />
-                                            <rect x="85" y="20" width="5" height="5" fill="black" />
-                                            <rect x="5" y="30" width="5" height="5" fill="black" />
-                                            <rect x="15" y="30" width="10" height="10" fill="black" />
-                                            <rect x="40" y="30" width="5" height="5" fill="black" />
-                                            <rect x="50" y="30" width="10" height="10" fill="black" />
-                                            <rect x="70" y="30" width="5" height="5" fill="black" />
-                                            <rect x="85" y="30" width="5" height="5" fill="black" />
-                                            <rect x="5" y="45" width="15" height="5" fill="black" />
-                                            <rect x="30" y="45" width="5" height="5" fill="black" />
-                                            <rect x="45" y="45" width="10" height="10" fill="black" />
-                                            <rect x="65" y="45" width="5" height="5" fill="black" />
-                                            <rect x="75" y="45" width="15" height="5" fill="black" />
-                                            <rect x="10" y="55" width="5" height="5" fill="black" />
-                                            <rect x="25" y="55" width="10" height="10" fill="black" />
-                                            <rect x="50" y="55" width="5" height="5" fill="black" />
-                                            <rect x="70" y="55" width="10" height="10" fill="black" />
-                                            <rect x="5" y="65" width="5" height="5" fill="black" />
-                                            <rect x="20" y="65" width="10" height="10" fill="black" />
-                                            <rect x="40" y="65" width="15" height="5" fill="black" />
-                                            <rect x="65" y="65" width="5" height="5" fill="black" />
-                                            <rect x="85" y="65" width="10" height="10" fill="black" />
-                                            <rect x="5" y="75" width="10" height="10" fill="black" />
-                                            <rect x="30" y="75" width="5" height="5" fill="black" />
-                                            <rect x="50" y="75" width="10" height="10" fill="black" />
-                                            <rect x="70" y="75" width="5" height="5" fill="black" />
-                                            <rect x="5" y="85" width="10" height="10" fill="black" />
-                                            <rect x="25" y="85" width="5" height="5" fill="black" />
-                                            <rect x="40" y="85" width="10" height="10" fill="black" />
-                                            <rect x="60" y="85" width="5" height="5" fill="black" />
-                                            <rect x="75" y="85" width="5" height="5" fill="black" />
-                                            <rect x="85" y="85" width="10" height="10" fill="black" />
-                                        </svg>
+                                {/* QR Code - removido SVG fixo, mostrar apenas ID do ingresso */}
+                                <div className="bg-white rounded-xl p-6 mb-4 flex items-center justify-center min-h-[200px]">
+                                    <div className="text-center">
+                                        <p className="text-sm text-gray-600 mb-3">Ingresso Confirmado</p>
+                                        <p className="text-2xl font-bold text-green-600 mb-2">✓</p>
                                     </div>
                                 </div>
 

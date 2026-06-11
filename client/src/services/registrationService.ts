@@ -62,9 +62,13 @@ export const registrationService = {
         await api.delete(`/registration/${reg_id}`)
     },
 
-    async payment(reg_id: string, value: number): Promise<string> {
-        const { data } = await api.patch<string>(`/registration/${reg_id}`, { value })
-        return data
+    async payment(reg_id: string, value: number): Promise<any> {
+        const dataPay = await api.post<any>("/payment/abacate", { amount: value })
+        console.log('💰 Payment response:', dataPay.data)
+        if(!dataPay.data.error){
+            return dataPay.data
+        }
+        throw new Error('Failed to process payment')
     },
 
     async toggleIsValid(reg_id: string): Promise<void> {

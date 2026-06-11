@@ -27,7 +27,7 @@ export class createUserUseCase {
   async execute({ user_name, user_email, con_id, end_id, user_desc, user_cpf, user_data_nasc, user_foto_url, user_senha, user_tel, user_tipo }: CreateUserRequest) {
 
     const congregation = await this.congregationRepository.getById(con_id)
-
+    console.log(end_id)
     const address = await this.addressrepository.getById(end_id)
 
     if(!congregation || !address){

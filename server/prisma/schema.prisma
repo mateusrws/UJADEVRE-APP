@@ -30,13 +30,21 @@ model Address {
 
 model Congregation {
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @default(now())
   con_id    String   @id @default(uuid())
   con_name  String
   end_id    String
 
-  end   Address @relation(fields: [end_id], references: [add_id])
+  end   Address @relation(fields: [end_id], references: [add_id], onDelete: Cascade, onUpdate: Cascade)
   users User[]
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  amount    Int
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -57,8 +65,8 @@ model User {
   user_point     Int      @default(0)
 
   registrations Registration[]
-  end           Address        @relation(fields: [end_id], references: [add_id])
-  cong          Congregation   @relation(fields: [con_id], references: [con_id])
+  end           Address        @relation(fields: [end_id], references: [add_id], onDelete: Cascade, onUpdate: Cascade)
+  cong          Congregation   @relation(fields: [con_id], references: [con_id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model News {
@@ -82,7 +90,7 @@ model Event {
   eve_icon             String
   end_id               String
 
-  end           Address        @relation(fields: [end_id], references: [add_id])
+  end           Address        @relation(fields: [end_id], references: [add_id], onDelete: Cascade)
   registrations Registration[]
 }
 
@@ -94,6 +102,6 @@ model Registration {
   reg_term_url     String
   reg_is_valid     Boolean
 
-  user  User  @relation(fields: [user_id], references: [user_id])
-  event Event @relation(fields: [eve_id], references: [eve_id])
+  user  User  @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  event Event @relation(fields: [eve_id], references: [eve_id], onDelete: Cascade, onUpdate: Cascade)
 }

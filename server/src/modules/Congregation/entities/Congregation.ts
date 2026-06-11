@@ -1,16 +1,7 @@
-// model Congregation{
-//   createdAt     DateTime          @default(now())
-//   updatedAt     DateTime          @updatedAt
-//   con_id        String            @id @default(uuid())
-//   con_name      String
-//   end_id        String
+
 
 import { randomUUID } from "crypto";
 import { Replace } from "src/utils/replace";
-
-//   end           Address           @relation(fields: [end_id],references: [add_id])
-//   users         User[]
-// }
 
 interface  CongregationSchema{
   con_createdAt: Date;

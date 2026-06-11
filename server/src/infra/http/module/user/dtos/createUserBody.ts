@@ -20,7 +20,6 @@ export class CreateUserBody {
 
     @IsString()
     @IsNotEmpty()
-    @IsPhoneNumber()
     user_tel: string
 
     @IsString()
