@@ -30,21 +30,13 @@ model Address {
 
 model Congregation {
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   con_id    String   @id @default(uuid())
   con_name  String
   end_id    String
 
   end   Address @relation(fields: [end_id], references: [add_id], onDelete: Cascade, onUpdate: Cascade)
   users User[]
-}
-
-model Payment {
-  id        String   @id @default(uuid())
-  amount    Int
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -67,6 +59,7 @@ model User {
   registrations Registration[]
   end           Address        @relation(fields: [end_id], references: [add_id], onDelete: Cascade, onUpdate: Cascade)
   cong          Congregation   @relation(fields: [con_id], references: [con_id], onDelete: Cascade, onUpdate: Cascade)
+  Payment       Payment[]
 }
 
 model News {
@@ -102,6 +95,20 @@ model Registration {
   reg_term_url     String
   reg_is_valid     Boolean
 
-  user  User  @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
-  event Event @relation(fields: [eve_id], references: [eve_id], onDelete: Cascade, onUpdate: Cascade)
+  user    User      @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  event   Event     @relation(fields: [eve_id], references: [eve_id], onDelete: Cascade, onUpdate: Cascade)
+  Payment Payment[]
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  amount    Int
+  status    String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reg_id    String
+  user_id   String
+
+  user         User         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: Cascade)
+  registration Registration @relation(fields: [reg_id], references: [reg_id], onDelete: Cascade, onUpdate: Cascade)
 }

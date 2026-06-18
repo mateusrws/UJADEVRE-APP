@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { getUserId } from "src/modules/archives/archivesUploadUseCase";
-
-
+import { getUserId } from "src/utils/getUserIdFromToken";
 export interface paymenteRequest {
     method: "PIX"
     data: {
         amount: number
+        externalId: string
     }
 }
 
@@ -15,6 +14,7 @@ export class createPixPayment {
     constructor(){}
 
     async execute(token: string, payment: paymenteRequest){
+
         if (payment.data.amount == 0) {
             throw new BadRequestException("O valor da transação deve ser maior que 0");
         }
@@ -26,7 +26,8 @@ export class createPixPayment {
             data: {
                 amount: payment.data.amount * 100,
                 metadata: {
-                    pedidoId: `payment-${userId}`
+                    pedidoId: `payment-${payment.data.externalId}`,
+                    userId: userId
                 }
             }
         });

@@ -8,10 +8,10 @@ import { getAddressByIdUseCase } from "src/modules/Address/useCases/getAddressBy
 export class ifAddressExist {
   constructor(private readonly getAddressUseCase: getAddressByIdUseCase) { }
 
-  async ifAlrefyExist(address: CreateAddressRequest): Promise<String | Address> {
+  async ifAlrefyExist(address: CreateAddressRequest): Promise<null | Address> {
     const exists = await this.getAddressUseCase.executeByObject(address)
     if (!exists) {
-      return "Prossiga"
+      return null
     }
     return exists
   }

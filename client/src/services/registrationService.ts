@@ -63,7 +63,7 @@ export const registrationService = {
     },
 
     async payment(reg_id: string, value: number): Promise<any> {
-        const dataPay = await api.post<any>("/payment/abacate", { amount: value })
+        const dataPay = await api.post<any>("/payment/abacate", { amount: value, externalId: reg_id })
         console.log('💰 Payment response:', dataPay.data)
         if(!dataPay.data.error){
             return dataPay.data

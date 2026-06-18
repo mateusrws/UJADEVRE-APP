@@ -1,22 +1,11 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { createClient } from "@supabase/supabase-js";
-import { jwtDecode } from "jwt-decode";
 import { putUserUseCase } from "../User/useCases/PutUserUseCase/putUserUseCase";
 import { putRegistrationUseCase } from "../Registration/useCases/putRegistrationUseCase/putRegistrationUseCase";
+import { getUserId } from "src/utils/getUserIdFromToken";
+import { Multer } from "multer";
 
-export function getUserId(token: string){
-    // Remove "Bearer " do token
-    const tokenLimpo = token.replace(/^Bearer\s+/i, '').trim();
 
-    // Decodifica o token limpo
-    const decoded: any = jwtDecode(tokenLimpo);
-    const userId = decoded.sub;
-
-    if (!userId) {
-        throw new BadRequestException("Token inválido ou ID do usuário não encontrado.");
-    }
-    return userId
-}
 
 @Injectable()
 export class archiveUploadUseCase {

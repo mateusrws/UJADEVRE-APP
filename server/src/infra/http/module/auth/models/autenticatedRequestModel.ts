@@ -1,4 +1,5 @@
-import type { Request } from "express";
+
+
 
 
 export class AutenticatedRequestModel extends Request {
