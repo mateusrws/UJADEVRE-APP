@@ -5,6 +5,8 @@ import { paymentRepository } from "../../repository/paymentRepository";
 interface  CreatePaymentRequest{
   id: string;
   amount: number;
+  reg_id: string;
+  user_id: string
 }
 
 
@@ -14,8 +16,8 @@ export class createPaymentUseCase{
 
     
 
-    async execute({ id, amount }: CreatePaymentRequest){
-      const payment = new Payment({ amount, status: PaymentStatus.PENDING }, id);
+    async execute({ id, amount, reg_id, user_id }: CreatePaymentRequest){
+      const payment = new Payment({ amount, status: PaymentStatus.PENDING, reg_id, user_id }, id);
       await this.paymentRepository.create(payment);
       return payment;
     }

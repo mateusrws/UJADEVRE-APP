@@ -2,6 +2,8 @@
 interface paymentSchema {
     amount: number;
     status: PaymentStatus;
+    reg_id: string;
+    user_id: string
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -45,5 +47,17 @@ export class Payment {
     }
     get get_updatedAt(): Date{
         return this.props.updatedAt!;
+    }
+    get get_reg_id(): string{
+        return this.props.reg_id;
+    }
+    set set_reg_id(reg_id: string){
+        this.props.reg_id=reg_id;
+    }
+    get get_user_id(): string{
+        return this.props.user_id;
+    }
+    set set_user_id(user_id: string){
+        this.props.user_id=user_id;
     }
 }

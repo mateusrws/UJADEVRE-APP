@@ -8,6 +8,8 @@ export class PrismaPaymentMapper {
                 id: payment.get_id,
                 amount: payment.get_amount,
                 status: payment.get_status,
+                reg_id: payment.get_reg_id,
+                user_id: payment.get_user_id,
                 createdAt: payment.get_createdAt,
                 updatedAt: payment.get_updatedAt,
             }
@@ -19,6 +21,10 @@ export class PrismaPaymentMapper {
             {
                 amount: payment.amount,
                 status: payment.status as PaymentStatus,
+                reg_id: payment.reg_id,
+                user_id: payment.user_id,
+                createdAt: payment.createdAt,
+                updatedAt: payment.updatedAt
             },
             payment.id
         ))
@@ -29,6 +35,10 @@ export class PrismaPaymentMapper {
             {
                 amount: payment.amount,
                 status: payment.status as PaymentStatus,
+                reg_id: payment.reg_id,
+                user_id: payment.user_id,
+                createdAt: payment.createdAt,
+                updatedAt: payment.updatedAt
             },
             payment.id
         )
