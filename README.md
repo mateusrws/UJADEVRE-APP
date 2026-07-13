@@ -83,9 +83,6 @@ PostgreSQL
 
 ![Inscrições](docs/images/registrations.png)
 
-> ## Painel de pagamento
-![Admin](docs/images/admin.png)
-
 > ## Modal de pagamento
 
 ![Pagamento](docs/images/payments.png)
