@@ -71,36 +71,44 @@ PostgreSQL
 
 ## Galeria
 
-> # Tela de Login
+> ## Tela de Login
 
 ![Login](docs/images/login.png)
 
-> # Tela de Eventos
+> ## Tela de Eventos
 
 ![Eventos](docs/images/events.png)
 
-> # Tela de inscrições
+> ## Tela de inscrições
 
 ![Inscrições](docs/images/registrations.png)
 
-> # Painel de pagamento
+> ## Painel de pagamento
 ![Admin](docs/images/admin.png)
 
-> # Modal de pagamento
+> ## Modal de pagamento
 
 ![Pagamento](docs/images/payments.png)
 
-> # Tela do Pix Gerado (Pix falso)
+> ## Tela do Pix Gerado (Pix falso)
 
 ![PIX](docs/images/pix-generate.png)
 
-> # Tela de Check-In 
+> ## Tela de Check-In 
 
 ![Check-in](docs/images/painel-checkin.png)
 
-> # Tela de Perfil
+> ## Tela de Perfil
 
 ![Perfil](docs/images/perfil.png)
+
+> ## Termo não enviado
+
+![Termo não enviado](docs/images/termo-nao-enviado.png)
+
+> ## Check-in realizado e termo enviado
+
+![Termo não enviado](docs/images/checkin-realizado.png)
 
 ## Roadmap
 
