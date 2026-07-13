@@ -71,21 +71,34 @@ PostgreSQL
 
 ## Galeria
 
-> Substitua pelas capturas reais do sistema.
+> # Tela de Login
 
 ![Login](docs/images/login.png)
 
+> # Tela de Eventos
+
 ![Eventos](docs/images/events.png)
+
+> # Tela de inscrições
 
 ![Inscrições](docs/images/registrations.png)
 
+> # Painel de pagamento
 ![Admin](docs/images/admin.png)
+
+> # Modal de pagamento
 
 ![Pagamento](docs/images/payments.png)
 
+> # Tela do Pix Gerado (Pix falso)
+
 ![PIX](docs/images/pix-generate.png)
 
+> # Tela de Check-In 
+
 ![Check-in](docs/images/painel-checkin.png)
+
+> # Tela de Perfil
 
 ![Perfil](docs/images/perfil.png)
 
